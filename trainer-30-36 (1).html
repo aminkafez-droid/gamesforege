@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ECE6DA">
+<title>Тренажёр 30–36</title>
+<style>
+:root{
+  --bg:#E9EEF5; --card:#FFFFFF; --soft:#F3F6FA; --line:#D7DFEA;
+  --ink:#1F2A3C; --muted:#5B6678; --blue:#2F6FD6; --blue-d:#2357A8; --blue-l:#DCEBFA;
+  --ok:#1E8E4E; --ok-l:#E3F5EA; --bad:#D2483B; --bad-l:#FBE7E4; --amber:#E0802A; --amber-l:#FDEBD8;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+#app{max-width:460px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:16px 16px 96px}
+h1,h2,h3{margin:0;line-height:1.15}
+h1{font-size:26px;font-weight:800}
+h2{font-size:22px;font-weight:800}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.card{background:var(--card);border-radius:18px;padding:14px 16px;box-shadow:0 1px 0 var(--line)}
+.row{display:flex;align-items:center;gap:12px}
+.stack>*+*{margin-top:12px}
+.stats{display:flex;justify-content:space-between;padding:4px 6px;font-weight:700;font-variant-numeric:tabular-nums}
+.stats span{display:flex;align-items:center;gap:6px}
+.ico{width:22px;height:22px;flex-shrink:0}
+.hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--blue);color:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 5px 0 var(--blue-d)}
+.hero:active,.btn:active,.tile:active,.opt:active{transform:translateY(2px)}
+.hero .t1{font-size:14px;opacity:.85}.hero .t2{font-size:21px;font-weight:800}
+.tile{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border-radius:18px;padding:14px 16px;border:2px solid var(--line)}
+.tile .ttl{font-weight:800;font-size:18px}
+.badge{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--blue-l);color:var(--blue);font-weight:800;flex-shrink:0}
+.badge.done{background:var(--ok-l);color:var(--ok)}
+.grp{margin:22px 4px 8px;font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.bar{height:8px;border-radius:8px;background:var(--soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--blue);border-radius:8px;transition:width .3s}
+.chev{margin-left:auto;color:var(--muted);font-size:22px}
+.btn{display:block;width:100%;min-height:54px;border-radius:16px;font-weight:800;font-size:18px;background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blue-d)}
+.btn:disabled{background:var(--line);color:var(--muted);box-shadow:none;cursor:default}
+.btn.ghost{background:transparent;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+.btn.ok{background:var(--ok);box-shadow:0 4px 0 #146b39}
+.btn.bad{background:var(--bad);box-shadow:0 4px 0 #a5342a}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.x{font-size:26px;line-height:1;color:var(--muted);padding:6px}
+.q{font-size:21px;font-weight:600;margin:18px 0 20px}
+.q .gap{display:inline-block;min-width:70px;border-bottom:3px solid var(--blue);text-align:center;color:var(--blue);font-weight:800}
+.opts{display:grid;gap:10px}
+.opt{width:100%;min-height:54px;border-radius:14px;background:var(--card);border:2px solid var(--line);font-size:18px;font-weight:600;padding:10px 14px;text-align:left}
+.opt.sel{border-color:var(--blue);background:var(--blue-l)}
+.opt.right{border-color:var(--ok);background:var(--ok-l)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-l)}
+.fb{border-radius:16px;padding:14px 16px;margin-top:16px}
+.fb.ok{background:var(--ok-l)}.fb.bad{background:var(--bad-l)}
+.fb b.h{display:block;font-size:18px;margin-bottom:4px}
+.hint{background:var(--amber-l);border-radius:14px;padding:12px 14px;font-size:15px;margin-top:12px}
+.spacer{flex:1}
+.footer{margin-top:18px}
+.big{font-size:44px;font-weight:800;text-align:center}
+.center{text-align:center}
+.text{font-size:17px;line-height:1.7}
+.text .g{display:inline-block;padding:0 6px;border-radius:8px;background:var(--blue-l);color:var(--blue);font-weight:800;cursor:pointer}
+.text .g.filled{background:var(--blue);color:#fff}
+.text .g.right{background:var(--ok);color:#fff}.text .g.wrong{background:var(--bad);color:#fff}
+.gaprow{margin-top:14px}
+.gaprow .n{font-weight:800;margin-bottom:6px}
+.gaprow .opts{grid-template-columns:1fr 1fr}
+.gaprow .opt{min-height:46px;font-size:16px}
+.timer{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0)}
+nav .in{max-width:460px;margin:0 auto;display:flex}
+nav button{flex:1;padding:8px 0 10px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button.on{color:var(--blue);font-weight:700}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv .card .v{font-size:26px;font-weight:800}
+.empty{padding:30px 10px;text-align:center;color:var(--muted)}
+.stars{color:var(--amber);font-size:14px;letter-spacing:1px}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Young+Serif&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#ECE6DA; --card:#FAF7F0; --soft:#EEE7DA; --line:#DCD2C2;
+  --ink:#4A2E20; --muted:#7D6656; --blue:#7FA22E; --blue-d:#5E7B1C; --blue-l:#EAF1D3;
+  --ok:#4E8A3A; --ok-l:#E3EFD7; --bad:#C24E3F; --bad-l:#F7DED8; --amber:#D9685B; --amber-l:#F7DCD6;
+  --font:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --disp:"Fredoka","Nunito",system-ui,sans-serif; --serif:"Young Serif",Georgia,serif;
+}
+body{background-color:var(--bg);
+  background-image:repeating-linear-gradient(0deg,rgba(110,90,60,.045) 0 1px,transparent 1px 3px),
+                   repeating-linear-gradient(90deg,rgba(110,90,60,.04) 0 1px,transparent 1px 3px)}
+h1,h2,.ttl,.big,.hero .t2,.kv .card .v,.btn,.badge{font-family:var(--disp);font-weight:600}
+h1{font-size:31px;color:var(--ink)}
+#app>.stack>div:first-child .muted{font-family:var(--serif);font-size:15px;color:var(--muted)}
+#app>.stack>div:first-child h1::after{content:"";display:inline-block;width:18px;height:18px;margin-left:8px;vertical-align:4px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c1.2 3 2 4.6 3.4 5.4 1.5.8 3.3.6 6.1.3-2.2 2-3.4 3.3-3.4 5 0 1.8 1.3 3.2 3.2 5.5-2.9-.7-4.6-1-6.1-.2-1.5.7-2.3 2.4-3.2 5.5-.9-3.1-1.7-4.8-3.2-5.5-1.5-.8-3.2-.5-6.1.2 1.9-2.3 3.2-3.7 3.2-5.5 0-1.7-1.2-3-3.4-5 2.8.3 4.6.5 6.1-.3C10 6.6 10.8 5 12 2z' fill='%235A3A28'/%3E%3C/svg%3E") center/contain no-repeat}
+.hero{background:linear-gradient(135deg,#9CC23F,#7A9E2A);box-shadow:0 5px 0 #5E7B1C}
+.hero .t1{opacity:.95}
+.grp{font-family:var(--serif);text-transform:none;letter-spacing:0;font-size:17px;font-weight:400;color:var(--ink);display:flex;align-items:center;gap:8px}
+.grp::before{content:"";width:13px;height:13px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c1.2 3 2 4.6 3.4 5.4 1.5.8 3.3.6 6.1.3-2.2 2-3.4 3.3-3.4 5 0 1.8 1.3 3.2 3.2 5.5-2.9-.7-4.6-1-6.1-.2-1.5.7-2.3 2.4-3.2 5.5-.9-3.1-1.7-4.8-3.2-5.5-1.5-.8-3.2-.5-6.1.2 1.9-2.3 3.2-3.7 3.2-5.5 0-1.7-1.2-3-3.4-5 2.8.3 4.6.5 6.1-.3C10 6.6 10.8 5 12 2z' fill='%235A3A28'/%3E%3C/svg%3E") center/contain no-repeat}
+.card,.tile,.opt{background:var(--card)}
+.tile{border-color:var(--line)}
+.badge{background:var(--amber-l);color:#A8473B}
+.badge.done{background:var(--ok-l);color:var(--ok)}
+.q .gap{border-bottom-color:var(--amber);color:#A8473B}
+.btn.ghost{color:var(--blue-d);border-color:var(--blue)}
+.tg{position:fixed;top:12px;right:max(12px,calc(50% - 218px));z-index:20;display:flex;align-items:center;gap:6px;
+  padding:7px 12px 7px 9px;border-radius:999px;background:var(--amber);color:#fff;text-decoration:none;
+  font:700 13px var(--font);box-shadow:0 3px 0 #A8473B}
+.tg svg{width:18px;height:18px}
+body.lesson .tg{display:none}
+#app>.stack>div:first-child{padding-right:96px}
+</style>
+</head>
+<body>
+<a class="tg" href="https://t.me/am_engstudy" target="_blank" rel="noopener" aria-label="Наш Telegram"><svg viewBox="0 0 24 24" fill="#FBF7F0"><path d="M21.5 4.2L2.9 11.4c-1 .4-1 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.3-1.5zM8.6 13.9l9.5-6c.5-.3.9-.1.5.2l-8 7.3-.3 3.4z"/></svg>наш TG</a><div id="app"></div>
+<nav id="nav"><div class="in">
+  <button data-tab="map"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Карта</button>
+  <button data-tab="exams"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Тексты</button>
+  <button data-tab="bank"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>Ошибки</button>
+  <button data-tab="profile"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Прогресс</button>
+</div></nav>
+
+<script>
+var CONFIG={name:"Тренажёр 30–36",subtitle:"Лексика ЕГЭ по английскому: выбери верное слово",author:""};
+// Задания тренажёра 30–36. Формат вопроса: s — предложение с ___, o — варианты, a — индекс верного, e — объяснение.
+var UNITS = [
+{id:"u1", group:"Глаголы-двойники", title:"say / tell / speak / talk",
+ hint:"Смотри, что стоит <b>сразу после пропуска</b>. Человек — <b>tell</b>. Слова или that — <b>say</b>. Язык или выступление — <b>speak</b>. Разговор, обсуждение — <b>talk</b>.",
+ Q:[
+ {s:"Could you ___ me the way to the station?", o:["say","tell","speak","talk"], a:1, e:"После пропуска человек (me) → <b>tell</b> sb sth."},
+ {s:"He ___ that he would be late.", o:["told","said","spoke","talked"], a:1, e:"После пропуска сразу that, человека нет → <b>said</b> that…"},
+ {s:"Do you ___ any foreign languages?", o:["say","tell","speak","talk"], a:2, e:"Говорить на языке — <b>speak</b> a language."},
+ {s:"Let's ___ it over before we decide.", o:["say","tell","speak","talk"], a:3, e:"<b>talk sth over</b> — обсудить что-то."},
+ {s:"My grandfather loved to ___ stories about his youth.", o:["say","tell","speak","talk"], a:1, e:"Устойчиво: <b>tell a story</b>."},
+ {s:"She left without ___ goodbye.", o:["saying","telling","speaking","talking"], a:0, e:"Устойчиво: <b>say goodbye</b>."},
+ {s:"I can't ___ the difference between these two cars.", o:["say","tell","speak","talk"], a:1, e:"Устойчиво: <b>tell the difference</b> — отличить."},
+ {s:"The professor was invited to ___ at the conference.", o:["say","tell","speak","chat"], a:2, e:"<b>speak</b> = выступать публично."},
+ {s:"Always ___ the truth, even when it is hard.", o:["say","tell","speak","talk"], a:1, e:"Устойчиво: <b>tell the truth</b>."},
+ {s:"What did the teacher ___ to you after the lesson?", o:["say","tell","speak","talk"], a:0, e:"<b>say sth to sb</b>: what — это то, что сказали. tell to you — ошибка."}
+ ]},
+{id:"u2", group:"Глаголы-двойники", title:"look / watch / see / notice",
+ hint:"После пропуска <b>at</b> или <b>for</b> — look. Прилагательное — look (выглядеть). Матч, ТВ, «как кто-то делает» — <b>watch</b>. Увидеть, встретить — <b>see</b>. Заметить — <b>notice</b>.",
+ Q:[
+ {s:"I'm ___ for my keys. Have you seen them?", o:["looking","watching","seeing","noticing"], a:0, e:"<b>look for</b> — искать."},
+ {s:"We spent the whole evening ___ TV.", o:["looking","watching","seeing","noticing"], a:1, e:"Смотреть телевизор — <b>watch TV</b>."},
+ {s:"You ___ tired. Did you sleep well?", o:["look","watch","see","notice"], a:0, e:"<b>look</b> + прилагательное = выглядеть."},
+ {s:"I haven't ___ him since we left school.", o:["looked","watched","seen","noticed"], a:2, e:"<b>see sb</b> — видеться, встречаться с кем-то."},
+ {s:"Nobody ___ that the window was open.", o:["looked","watched","noticed","stared"], a:2, e:"<b>notice that…</b> — заметить, что…"},
+ {s:"She sat ___ out of the window at the rain.", o:["looking","watching","seeing","noticing"], a:0, e:"<b>look out of the window</b> — смотреть в окно."},
+ {s:"The children ___ the magician pull a rabbit out of his hat.", o:["looked","watched","stared","glanced"], a:1, e:"<b>watch sb do sth</b> — наблюдать, как кто-то делает."},
+ {s:"Could you ___ after my cat while I'm away?", o:["look","watch","see","take"], a:0, e:"<b>look after</b> — присматривать."},
+ {s:"I'll ___ you at the station at five.", o:["see","look","watch","stare"], a:0, e:"Встретиться с кем-то — <b>see sb</b>."},
+ {s:"He ___ up the word in a dictionary.", o:["looked","watched","saw","searched"], a:0, e:"<b>look up</b> — найти (в словаре, справочнике)."}
+ ]},
+{id:"u3", group:"Глаголы-двойники", title:"remind / remember / resemble",
+ hint:"<b>remind</b> sb (of / to / about) — напоминать кому-то. <b>remember</b> — помнить самому. <b>resemble</b> sb — быть похожим (без предлога!). <b>memorize</b> — заучить.",
+ Q:[
+ {s:"Please ___ me to call my mother tonight.", o:["remember","remind","recall","memorize"], a:1, e:"<b>remind sb to do</b> — напомнить кому-то сделать."},
+ {s:"I ___ meeting her at a party years ago.", o:["remember","remind","resemble","memorize"], a:0, e:"<b>remember doing</b> — помнить, что делал."},
+ {s:"She strongly ___ her grandmother.", o:["reminds","resembles","remembers","recalls"], a:1, e:"<b>resemble sb</b> — быть похожим, без предлога."},
+ {s:"This song ___ me of my childhood.", o:["remembers","reminds","resembles","recalls"], a:1, e:"<b>remind sb of sth</b> — напоминать о чём-то."},
+ {s:"Don't forget to ___ to lock the door.", o:["remember","remind","recall","memorize"], a:0, e:"Самому не забыть сделать — <b>remember to do</b>."},
+ {s:"Actors have to ___ long texts.", o:["remind","memorize","resemble","recall"], a:1, e:"<b>memorize</b> — выучить наизусть."},
+ {s:"The two brothers don't ___ each other at all.", o:["resemble","look","remind","remember"], a:0, e:"<b>resemble each other</b>. look требует like."},
+ {s:"Thank you for ___ me about the meeting!", o:["remembering","reminding","recalling","memorizing"], a:1, e:"<b>remind sb about sth</b> — напомнить о чём-то."},
+ {s:"As far as I can ___, he was always kind to everyone.", o:["remind","remember","resemble","memorize"], a:1, e:"Устойчиво: <b>as far as I can remember</b>."},
+ {s:"Visitors are ___ that photography is not allowed.", o:["remembered","reminded","resembled","recalled"], a:1, e:"<b>be reminded that…</b> — посетителям напоминают."}
+ ]},
+{id:"u4", group:"Глаголы-двойники", title:"manage / succeed / achieve / cope",
+ hint:"<b>manage to do</b> — суметь. <b>succeed in doing</b> — преуспеть. <b>achieve</b> + цель/успех. <b>cope with</b> — справиться. <b>reach</b> + место (без предлога).",
+ Q:[
+ {s:"Did you ___ to finish the project on time?", o:["manage","succeed","achieve","cope"], a:0, e:"<b>manage to do</b> — суметь сделать."},
+ {s:"She finally ___ in passing her driving test.", o:["managed","succeeded","achieved","coped"], a:1, e:"<b>succeed in doing</b>."},
+ {s:"He has ___ a lot in his career.", o:["managed","succeeded","achieved","coped"], a:2, e:"<b>achieve a lot</b> — многого добиться."},
+ {s:"It's hard to ___ with so much stress.", o:["cope","succeed","achieve","reach"], a:0, e:"<b>cope with</b> — справляться с."},
+ {s:"We ___ the top of the mountain by noon.", o:["achieved","reached","managed","succeeded"], a:1, e:"Добраться до места — <b>reach</b> (без предлога)."},
+ {s:"To ___ your goals, you need a clear plan.", o:["manage","succeed","achieve","cope"], a:2, e:"<b>achieve goals</b> — достигать целей."},
+ {s:"Did you ___ yourself at the party? — Yes, it was great fun!", o:["enjoy","like","please","amuse"], a:0, e:"<b>enjoy yourself</b> — хорошо провести время."},
+ {s:"Nobody ___ in solving the puzzle.", o:["managed","succeeded","achieved","coped"], a:1, e:"После пропуска in + -ing → <b>succeed in</b>."},
+ {s:"Despite the rain, they ___ to reach the village before dark.", o:["managed","succeeded","achieved","coped"], a:0, e:"После пропуска to + глагол → <b>manage to</b>."},
+ {s:"The company ___ great success last year.", o:["reached","achieved","managed","succeeded"], a:1, e:"<b>achieve success</b>."}
+ ]},
+{id:"u5", group:"Глаголы-двойники", title:"allow / let / agree, rise / raise, lie / lay",
+ hint:"<b>allow sb to do</b>, но <b>let sb do</b> (без to). <b>agree</b> with sb / to do, <b>accept</b> + предложение, подарок. <b>rise</b> — подниматься само, <b>raise</b> — поднимать что-то. <b>lie</b> — лежать, <b>lay</b> — класть.",
+ Q:[
+ {s:"My parents don't ___ me to stay out late.", o:["let","allow","agree","accept"], a:1, e:"После me стоит to → <b>allow sb to do</b>."},
+ {s:"My parents won't ___ me go to the party.", o:["let","allow","agree","permit"], a:0, e:"После me глагол без to → <b>let sb do</b>."},
+ {s:"I ___ with you completely.", o:["agree","accept","allow","admit"], a:0, e:"<b>agree with sb</b> — соглашаться с кем-то."},
+ {s:"She ___ the job offer without thinking twice.", o:["agreed","accepted","allowed","admitted"], a:1, e:"Принять предложение — <b>accept an offer</b>."},
+ {s:"Prices ___ every year.", o:["rise","raise","arise","grow up"], a:0, e:"Цены растут сами, без дополнения → <b>rise</b>."},
+ {s:"If you have a question, ___ your hand.", o:["rise","raise","arise","grow"], a:1, e:"Поднять что-то (руку) → <b>raise</b>."},
+ {s:"I'm tired, I need to ___ down for a while.", o:["lie","lay","put","set"], a:0, e:"Прилечь — <b>lie down</b>."},
+ {s:"She ___ the baby on the bed carefully.", o:["laid","lay","lied","lain"], a:0, e:"Положить кого-то — <b>lay</b>, в прошедшем <b>laid</b>. lay — прошедшее от lie (лежать)."},
+ {s:"Smoking is not ___ in the building.", o:["allowed","let","agreed","accepted"], a:0, e:"<b>be allowed</b> — быть разрешённым. let в пассиве так не употребляется."},
+ {s:"She ___ her exam and had to take it again.", o:["missed","failed","lost","dropped"], a:1, e:"Провалить экзамен — <b>fail an exam</b>."}
+ ]},
+{id:"u6", group:"Глаголы-двойники", title:"bring / take / carry, wear / fit / suit",
+ hint:"<b>bring</b> — принести сюда, <b>take</b> — отнести отсюда, <b>carry</b> — нести в руках. <b>wear</b> — носить одежду, <b>put on</b> — надеть. <b>fit</b> — подходить по размеру, <b>suit</b> — идти, быть к лицу.",
+ Q:[
+ {s:"Could you ___ me a glass of water from the kitchen?", o:["bring","take","carry","lead"], a:0, e:"Принести сюда, к говорящему → <b>bring</b>."},
+ {s:"She always ___ a black dress to formal events.", o:["wears","dresses","puts on","carries"], a:0, e:"Носить одежду — <b>wear</b>."},
+ {s:"Wait a second, I need to ___ my coat.", o:["wear","put on","dress","try"], a:1, e:"Надеть (действие) — <b>put on</b>."},
+ {s:"He ___ me a cup of tea.", o:["offered","suggested","proposed","advised"], a:0, e:"<b>offer sb sth</b> — предложить что-то кому-то. suggest me — ошибка."},
+ {s:"My doctor ___ me to do more exercise.", o:["offered","suggested","advised","proposed"], a:2, e:"<b>advise sb to do</b>. suggest sb to do — ошибка."},
+ {s:"The bag was so heavy that I couldn't ___ it.", o:["carry","bring","wear","lead"], a:0, e:"Нести тяжёлое — <b>carry</b>."},
+ {s:"Please ___ the rubbish out.", o:["take","bring","fetch","wear"], a:0, e:"Вынести отсюда — <b>take out</b>."},
+ {s:"The new shoes don't ___ me; they're too small.", o:["fit","suit","match","go"], a:0, e:"По размеру — <b>fit</b>."},
+ {s:"That colour really ___ you.", o:["fits","suits","matches","goes"], a:1, e:"Быть к лицу — <b>suit</b>."},
+ {s:"When did you ___ in London?", o:["reach","arrive","get","come"], a:1, e:"<b>arrive in</b> + город. reach — без предлога."}
+ ]},
+{id:"u7", group:"Линкеры и связки", title:"however / although / despite / therefore",
+ hint:"<b>However,</b> — в начале предложения, с запятой. <b>Although</b> + целое предложение. <b>Despite</b> + существительное или -ing. <b>Therefore</b> — поэтому. <b>Moreover</b> — более того.",
+ Q:[
+ {s:"It was raining. ___, we went for a walk.", o:["However","Although","Despite","Because"], a:0, e:"Новое предложение и запятая → <b>However,</b>"},
+ {s:"___ it was raining, we went for a walk.", o:["However","Although","Despite","In spite"], a:1, e:"Дальше целое предложение (it was raining) → <b>Although</b>."},
+ {s:"___ the rain, we went for a walk.", o:["Although","Despite","However","Even though"], a:1, e:"Дальше существительное → <b>Despite</b>."},
+ {s:"He was ill, ___ he stayed at home.", o:["so","but","although","because"], a:0, e:"Следствие → <b>so</b>."},
+ {s:"The hotel was cheap. ___, it was close to the beach.", o:["However","Moreover","Therefore","Otherwise"], a:1, e:"Ещё один плюс → <b>Moreover</b>."},
+ {s:"He didn't study. ___, he failed the exam.", o:["Therefore","However","Moreover","Although"], a:0, e:"Вывод, следствие → <b>Therefore</b>."},
+ {s:"Hurry up, ___ you'll miss the train.", o:["otherwise","however","therefore","unless"], a:0, e:"Иначе → <b>otherwise</b>."},
+ {s:"___ to the forecast, it will snow tomorrow.", o:["According","Regarding","Owing","Due"], a:0, e:"<b>according to</b> — согласно."},
+ {s:"The flight was cancelled ___ bad weather.", o:["due to","despite","although","in case"], a:0, e:"Причина + существительное → <b>due to</b>."},
+ {s:"Take an umbrella ___ it rains.", o:["in case","unless","despite","although"], a:0, e:"На случай, если → <b>in case</b>."}
+ ]},
+{id:"u8", group:"Коллокации", title:"make или do",
+ hint:"<b>make</b> — создать, произвести: a mistake, a decision, noise, friends, sense. <b>do</b> — выполнять работу: homework, a favour, your best, the washing-up, good.",
+ Q:[
+ {s:"Could you ___ me a favour?", o:["make","do","take","have"], a:1, e:"<b>do sb a favour</b>."},
+ {s:"Don't ___ so much noise!", o:["make","do","take","have"], a:0, e:"<b>make noise</b>."},
+ {s:"I have to ___ my homework tonight.", o:["make","do","take","have"], a:1, e:"<b>do homework</b>."},
+ {s:"She ___ a mistake in the test.", o:["made","did","took","had"], a:0, e:"<b>make a mistake</b>."},
+ {s:"We need to ___ a decision soon.", o:["make","do","have","get"], a:0, e:"<b>make a decision</b>."},
+ {s:"He ___ his best, but it wasn't enough.", o:["made","did","took","had"], a:1, e:"<b>do your best</b>."},
+ {s:"Who ___ the washing-up yesterday?", o:["made","did","took","had"], a:1, e:"Домашние дела — <b>do the washing-up</b>."},
+ {s:"They ___ friends with their neighbours quickly.", o:["made","did","took","had"], a:0, e:"<b>make friends with</b>."},
+ {s:"It doesn't ___ sense.", o:["make","do","take","have"], a:0, e:"<b>make sense</b> — иметь смысл."},
+ {s:"Regular exercise will ___ you good.", o:["make","do","take","give"], a:1, e:"<b>do sb good</b> — пойти на пользу."}
+ ]},
+{id:"u9", group:"Коллокации", title:"take / keep / pay / catch",
+ hint:"<b>pay attention</b>, <b>keep a secret / a promise / an eye on</b>, <b>take care of / it personally</b>, <b>catch a bus</b>, <b>make a complaint</b>.",
+ Q:[
+ {s:"Please ___ attention to the board.", o:["pay","take","give","keep"], a:0, e:"<b>pay attention to</b>."},
+ {s:"Can you ___ a secret?", o:["keep","hold","save","take"], a:0, e:"<b>keep a secret</b>."},
+ {s:"It will ___ you an hour to get there.", o:["take","have","cost","spend"], a:0, e:"<b>it takes sb time to do</b>."},
+ {s:"We ran but didn't ___ the bus.", o:["catch","keep","hold","pay"], a:0, e:"Успеть на автобус — <b>catch the bus</b>."},
+ {s:"He ___ his promise and came back.", o:["kept","held","made","took"], a:0, e:"Сдержать обещание — <b>keep a promise</b>."},
+ {s:"Don't ___ it personally; he's rude to everyone.", o:["take","have","keep","make"], a:0, e:"<b>take it personally</b> — принимать на свой счёт."},
+ {s:"Who is going to ___ care of the dog?", o:["take","have","keep","pay"], a:0, e:"<b>take care of</b>."},
+ {s:"She ___ a party for her birthday.", o:["had","made","took","kept"], a:0, e:"Устроить вечеринку — <b>have a party</b>."},
+ {s:"I'd like to ___ a complaint.", o:["make","do","take","keep"], a:0, e:"<b>make a complaint</b>."},
+ {s:"Could you ___ an eye on my bag?", o:["keep","hold","take","pay"], a:0, e:"<b>keep an eye on</b> — присмотреть."}
+ ]},
+{id:"u10", group:"Фразовые глаголы", title:"turn on / find out / give up / pick up",
+ hint:"Смотри на частицу после пропуска и на смысл: <b>give up</b> — сдаться, <b>put off</b> — отложить, <b>take after</b> — быть похожим, <b>run out of</b> — закончиться, <b>get on with</b> — ладить.",
+ Q:[
+ {s:"Can you ___ on the light? It's dark.", o:["turn","take","give","look"], a:0, e:"<b>turn on</b> — включить."},
+ {s:"I need to ___ out what time the train leaves.", o:["find","look","make","take"], a:0, e:"<b>find out</b> — выяснить."},
+ {s:"Never ___ up! You can do it.", o:["give","take","put","get"], a:0, e:"<b>give up</b> — сдаваться."},
+ {s:"I'm looking forward ___ seeing you.", o:["to","for","at","on"], a:0, e:"<b>look forward to</b> + -ing."},
+ {s:"The plane ___ off on time.", o:["took","gave","put","turned"], a:0, e:"Самолёт взлетел — <b>took off</b>."},
+ {s:"Please ___ up your toys from the floor.", o:["pick","take","give","look"], a:0, e:"<b>pick up</b> — поднять, подобрать."},
+ {s:"We ran ___ of milk.", o:["out","off","away","over"], a:0, e:"<b>run out of</b> — закончиться."},
+ {s:"Could you ___ me up at the airport?", o:["pick","take","bring","get"], a:0, e:"Встретить на машине — <b>pick sb up</b>."},
+ {s:"We had to ___ off the meeting until Monday.", o:["put","call","take","give"], a:0, e:"Отложить до понедельника — <b>put off</b>. call off — отменить совсем."},
+ {s:"She ___ after her mother; they have the same smile.", o:["takes","looks","gets","goes"], a:0, e:"<b>take after</b> — быть похожим на родственника."},
+ {s:"How are you getting ___ with your new classmates?", o:["on","off","up","over"], a:0, e:"<b>get on with</b> — ладить."}
+ ]},
+{id:"u11", group:"Предлоги", title:"proud of / good at / depend on",
+ hint:"Предлог зависит от слова перед ним, его нужно запомнить: good <b>at</b>, proud <b>of</b>, depend <b>on</b>, interested <b>in</b>, married <b>to</b>, reason <b>for</b>.",
+ Q:[
+ {s:"She is very good ___ maths.", o:["at","in","on","with"], a:0, e:"<b>good at</b>."},
+ {s:"I'm proud ___ my son.", o:["of","for","with","about"], a:0, e:"<b>proud of</b>."},
+ {s:"It depends ___ the weather.", o:["on","of","from","at"], a:0, e:"<b>depend on</b>."},
+ {s:"He is afraid ___ spiders.", o:["of","from","with","at"], a:0, e:"<b>afraid of</b>."},
+ {s:"Are you interested ___ history?", o:["in","at","on","with"], a:0, e:"<b>interested in</b>."},
+ {s:"She is married ___ a doctor.", o:["to","with","on","for"], a:0, e:"<b>married to</b>, не with."},
+ {s:"I'm tired ___ waiting.", o:["of","from","with","at"], a:0, e:"Надоело — <b>tired of</b>."},
+ {s:"What's the reason ___ your absence?", o:["for","of","to","about"], a:0, e:"<b>reason for</b>."},
+ {s:"He apologized ___ being late.", o:["for","about","of","to"], a:0, e:"<b>apologize for</b>."},
+ {s:"We arrived ___ the airport early.", o:["at","to","in","on"], a:0, e:"<b>arrive at</b> + здание/пункт. arrive to — ошибка."}
+ ]},
+{id:"u12", group:"Устойчивые выражения", title:"by chance / in fact / worth doing",
+ hint:"Выражения учатся целиком: <b>by chance</b>, <b>in fact</b>, <b>by the way</b>, <b>sooner or later</b>, <b>can't help doing</b>, <b>be worth doing</b>, <b>take for granted</b>.",
+ Q:[
+ {s:"I met her ___ chance in a café.", o:["by","on","in","at"], a:0, e:"<b>by chance</b> — случайно."},
+ {s:"___ fact, I've never been to Paris.", o:["In","On","At","By"], a:0, e:"<b>in fact</b> — на самом деле."},
+ {s:"That car must have cost a ___.", o:["fortune","lot","treasure","wealth"], a:0, e:"<b>cost a fortune</b> — стоить целое состояние."},
+ {s:"The test was a piece of ___.", o:["cake","bread","pie","sugar"], a:0, e:"<b>a piece of cake</b> — проще простого."},
+ {s:"I can't help ___ when I see that video.", o:["laughing","laugh","to laugh","laughed"], a:0, e:"<b>can't help doing</b> — не могу удержаться."},
+ {s:"This museum is worth ___.", o:["visiting","to visit","visit","visited"], a:0, e:"<b>be worth doing</b>."},
+ {s:"We'll get there sooner or ___.", o:["later","late","latest","lately"], a:0, e:"<b>sooner or later</b> — рано или поздно."},
+ {s:"___ the way, have you seen Tom?", o:["By","On","In","At"], a:0, e:"<b>by the way</b> — кстати."},
+ {s:"He visits us once in a blue ___.", o:["moon","sky","sun","day"], a:0, e:"<b>once in a blue moon</b> — очень редко."},
+ {s:"Don't take your parents for ___.", o:["granted","given","sure","certain"], a:0, e:"<b>take for granted</b> — принимать как должное."}
+ ]},
+{id:"u13", group:"Существительные и прилагательные", title:"trip / fare / opportunity / opinion",
+ hint:"<b>trip</b> — поездка, <b>travel</b> — путешествия вообще. <b>fare</b> — плата за проезд, <b>fee</b> — плата за услугу, <b>salary</b> — зарплата. <b>opportunity</b> — возможность, шанс.",
+ Q:[
+ {s:"How was your ___ to Spain?", o:["trip","travel","voyage","way"], a:0, e:"Конкретная поездка — <b>trip</b>. travel — неисчисляемое, «a travel» не говорят."},
+ {s:"Air ___ has become much cheaper.", o:["travel","trip","journey","voyage"], a:0, e:"Путешествия вообще, неисчисляемое — <b>travel</b>."},
+ {s:"The bus ___ has gone up again.", o:["fare","fee","salary","price"], a:0, e:"Плата за проезд — <b>fare</b>."},
+ {s:"University ___ are very high in the UK.", o:["fees","fares","salaries","wages"], a:0, e:"Плата за обучение — <b>fees</b>."},
+ {s:"Her ___ is paid every month.", o:["salary","fee","fare","cost"], a:0, e:"Ежемесячная зарплата — <b>salary</b>."},
+ {s:"This job is a great ___ for you to gain experience.", o:["opportunity","possibility","occasion","event"], a:0, e:"<b>opportunity for sb to do</b> — шанс что-то сделать."},
+ {s:"I need your ___ to leave early.", o:["permission","admission","opinion","solution"], a:0, e:"Разрешение — <b>permission</b>."},
+ {s:"What's your ___ of the new teacher?", o:["opinion","mind","attitude","idea"], a:0, e:"<b>opinion of / about</b> — мнение."},
+ {s:"We need to find a ___ to this problem.", o:["solution","decision","result","reason"], a:0, e:"<b>solution to a problem</b>."},
+ {s:"What was the ___ of your visit?", o:["purpose","reason","target","cause"], a:0, e:"<b>purpose of a visit</b> — цель. reason требует for."}
+ ]},
+{id:"u14", group:"Наречия и прилагательные", title:"hardly / nearly / lately / lonely",
+ hint:"<b>hard</b> — усердно, <b>hardly</b> — едва. <b>late</b> — поздно, <b>lately</b> — в последнее время. <b>high</b> — высоко, <b>highly</b> — очень. <b>lonely</b> — одинокий (грустно), <b>alone</b> — один.",
+ Q:[
+ {s:"I ___ know him; we've only met once.", o:["hardly","hard","nearly","mostly"], a:0, e:"Едва знаю — <b>hardly</b>."},
+ {s:"She worked ___ all day.", o:["hard","hardly","highly","nearly"], a:0, e:"Усердно — <b>hard</b>."},
+ {s:"It's ___ midnight; let's go home.", o:["nearly","hardly","lately","highly"], a:0, e:"Почти — <b>nearly</b>."},
+ {s:"Have you seen any good films ___?", o:["lately","late","latest","later"], a:0, e:"В последнее время — <b>lately</b>."},
+ {s:"He is a ___ respected scientist.", o:["highly","high","hardly","heavy"], a:0, e:"Очень уважаемый — <b>highly respected</b>."},
+ {s:"I felt ___ when my friends moved away.", o:["lonely","alone","single","only"], a:0, e:"Одиноко, грустно без людей — <b>lonely</b>. alone — просто «один», без оценки."},
+ {s:"Is Monday ___ for you?", o:["convenient","comfortable","useful","pleasant"], a:0, e:"Удобно по времени — <b>convenient</b>."},
+ {s:"Your bag is very ___ to mine.", o:["similar","same","alike","like"], a:0, e:"<b>similar to</b> — похожий на."},
+ {s:"I ___ disagree with this decision.", o:["strongly","hardly","nearly","lately"], a:0, e:"Категорически — <b>strongly</b> disagree."},
+ {s:"Sorry I'm ___; the traffic was terrible.", o:["late","lately","latest","lastly"], a:0, e:"Опоздать — <b>be late</b>."}
+ ]},
+{id:"u15", group:"Паронимы", title:"affect / effect, adapt / adopt",
+ hint:"<b>affect</b> — глагол (влиять), <b>effect</b> — существительное (эффект). <b>adapt</b> — приспособиться, <b>adopt</b> — принять, усыновить. <b>economic</b> — экономический, <b>economical</b> — экономный.",
+ Q:[
+ {s:"The weather can ___ your mood.", o:["affect","effect","infect","reflect"], a:0, e:"Глагол «влиять» — <b>affect</b>."},
+ {s:"The medicine had no ___ on him.", o:["effect","affect","effort","affair"], a:0, e:"Существительное «эффект» — <b>effect</b>."},
+ {s:"Please ___ that all windows are closed.", o:["ensure","assure","insure","secure"], a:0, e:"Убедиться, обеспечить — <b>ensure</b>."},
+ {s:"I can ___ you that everything is fine.", o:["assure","ensure","insure","secure"], a:0, e:"Заверить кого-то — <b>assure sb</b>."},
+ {s:"It took her a while to ___ to the new school.", o:["adapt","adopt","admit","accept"], a:0, e:"Привыкнуть, приспособиться — <b>adapt to</b>."},
+ {s:"They decided to ___ a child.", o:["adopt","adapt","admit","accept"], a:0, e:"Усыновить — <b>adopt</b>."},
+ {s:"This car is very ___: it uses little fuel.", o:["economical","economic","economy","economics"], a:0, e:"Экономный — <b>economical</b>."},
+ {s:"The country is facing serious ___ problems.", o:["economic","economical","economy","economics"], a:0, e:"Экономический — <b>economic</b>."},
+ {s:"I really ___ her talent.", o:["admire","inspire","wonder","suppose"], a:0, e:"Восхищаться — <b>admire</b>."},
+ {s:"I ___ why he left so early.", o:["wonder","suppose","admire","inspire"], a:0, e:"<b>I wonder why…</b> — интересно, почему…"},
+ {s:"Her story ___ me to start painting.", o:["inspired","admired","wondered","supposed"], a:0, e:"<b>inspire sb to do</b> — вдохновить."}
+ ]}
+];
+
+// Тексты-экзамены: в text пропуски вида {30}…{36}; gaps — варианты по порядку 30–36.
+var EXAMS = [
+{id:"e1", title:"A trip to the mountains",
+ text:"Last summer my friends and I decided to go hiking in the mountains. At first, my parents didn't want to {30} me go, but after a long conversation they finally {31}. We {32} off early in the morning. The path was steep, and by midday we were exhausted. {33}, nobody wanted to turn back. When we {34} the top, the view was breathtaking. We took lots of photos, and I can still {35} how happy I felt. It was the best {36} I have ever had.",
+ gaps:[
+ {o:["let","allow","permit","agree"], a:0, e:"После me глагол без to → <b>let sb do</b>."},
+ {o:["agreed","accepted","admitted","allowed"], a:0, e:"Согласились, без дополнения → <b>agreed</b>."},
+ {o:["set","took","put","went"], a:0, e:"Отправиться в путь — <b>set off</b>."},
+ {o:["However","Although","Despite","Therefore"], a:0, e:"Начало предложения с запятой, противопоставление → <b>However,</b>"},
+ {o:["reached","arrived","got","came"], a:0, e:"Добраться до места без предлога → <b>reached</b>."},
+ {o:["remember","remind","resemble","memorize"], a:0, e:"Помнить самому — <b>remember</b>."},
+ {o:["trip","travel","voyage","way"], a:0, e:"Конкретная поездка — <b>trip</b>."}
+ ]},
+{id:"e2", title:"The new neighbour",
+ text:"When a new family moved in next door, my mum {30} me to go and say hello. I'm quite shy, so I was nervous. The door was opened by a girl who looked about my age. She smiled and {31} me in. She {32} me she had just moved from Kazan. Soon we found out that we had a lot in common: we were both interested {33} photography. Since then we have {34} best friends. She always {35} me laugh, and her {36} to life is always positive.",
+ gaps:[
+ {o:["told","said","spoke","talked"], a:0, e:"После пропуска человек → <b>told</b> me to…"},
+ {o:["invited","offered","suggested","allowed"], a:0, e:"Пригласить войти — <b>invite sb in</b>."},
+ {o:["told","said","spoke","talked"], a:0, e:"После пропуска человек → <b>told</b> me (that)…"},
+ {o:["in","at","on","of"], a:0, e:"<b>interested in</b>."},
+ {o:["become","made","done","taken"], a:0, e:"Стать лучшими друзьями — <b>become best friends</b>."},
+ {o:["makes","does","lets","gets"], a:0, e:"Рассмешить — <b>make sb laugh</b>."},
+ {o:["attitude","opinion","view","purpose"], a:0, e:"Отношение к жизни — <b>attitude to life</b>."}
+ ]},
+{id:"e3", title:"Learning to cook",
+ text:"Until last year, I couldn't cook at all. Then my grandmother decided to teach me. 'Cooking isn't difficult,' she {30}. 'You just need to pay {31}.' At first I {32} a lot of mistakes: I burnt the rice and put too much salt in the soup. {33} these failures, I didn't give {34}. Little by little, I {35} to cook simple dishes. Now I cook dinner for the whole family twice a week, and my grandmother says she is very proud {36} me.",
+ gaps:[
+ {o:["said","told","spoke","talked"], a:0, e:"Прямая речь без человека после глагола → <b>said</b>."},
+ {o:["attention","care","interest","notice"], a:0, e:"<b>pay attention</b>."},
+ {o:["made","did","had","took"], a:0, e:"<b>make mistakes</b>."},
+ {o:["Despite","Although","However","Because"], a:0, e:"Дальше существительное (these failures) → <b>Despite</b>."},
+ {o:["up","on","out","off"], a:0, e:"Сдаться — <b>give up</b>."},
+ {o:["managed","succeeded","achieved","coped"], a:0, e:"После пропуска to + глагол → <b>managed to</b>."},
+ {o:["of","at","for","with"], a:0, e:"<b>proud of</b>."}
+ ]},
+{id:"e4", title:"A day without phones",
+ text:"Our teacher once suggested an experiment: to spend a whole day without phones. At first we thought it was impossible. Most of us {30} our phones hundreds of times a day. But the teacher {31} us that it would be worth {32}. On Saturday morning I switched my phone off and {33} it in a drawer. Surprisingly, the day passed quickly. I read a book, helped my dad in the garden and {34} my grandmother a visit. In the evening, I realised I hadn't felt bored at all. The experiment had a strong {35} on me, and now I {36} check my phone during dinner.",
+ gaps:[
+ {o:["check","look","watch","see"], a:0, e:"Проверять телефон — <b>check</b>. look требует at."},
+ {o:["assured","ensured","insured","secured"], a:0, e:"Заверить кого-то — <b>assure sb</b>."},
+ {o:["trying","to try","try","tried"], a:0, e:"<b>be worth doing</b>."},
+ {o:["put","took","brought","carried"], a:0, e:"Положить в ящик — <b>put</b>."},
+ {o:["paid","made","gave","did"], a:0, e:"Навестить — <b>pay sb a visit</b>."},
+ {o:["effect","affect","effort","efficiency"], a:0, e:"Существительное «влияние, эффект» → <b>effect on</b>."},
+ {o:["hardly ever","nearly","lately","highly"], a:0, e:"Почти никогда — <b>hardly ever</b>."}
+ ]},
+{id:"e5", title:"The lost wallet",
+ text:"Last week I was walking home when I {30} a wallet lying on the pavement. I picked it up and {31} inside. There was some money, a bank card and a student ID. I decided to {32} the wallet to the police station. The officer {33} me for my honesty and wrote down my phone number. Two days later, a young man called me. He {34} me that he had been looking {35} the wallet everywhere. He was so grateful that he invited me for a coffee. It's nice to know that a small act of kindness can {36} a big difference.",
+ gaps:[
+ {o:["noticed","looked","watched","stared"], a:0, e:"Заметить что-то — <b>notice</b>."},
+ {o:["looked","saw","watched","noticed"], a:0, e:"Заглянуть внутрь — <b>look inside</b>."},
+ {o:["take","bring","fetch","lead"], a:0, e:"Отнести отсюда в другое место — <b>take</b>."},
+ {o:["thanked","said","told","spoke"], a:0, e:"<b>thank sb for sth</b>."},
+ {o:["told","said","spoke","talked"], a:0, e:"После пропуска человек → <b>told</b> me…"},
+ {o:["for","at","after","out"], a:0, e:"Искать — <b>look for</b>."},
+ {o:["make","do","have","take"], a:0, e:"<b>make a difference</b> — иметь значение."}
+ ]},
+{id:"e6", title:"The school science fair",
+ text:"Every spring our school holds a science fair. This year my friend Anna and I decided to {30} part. Our project was about how plants {31} to different amounts of light. We had to {32} the results every day for a month. It was hard work, but we didn't {33} a single day. On the day of the fair, the judges asked us a lot of questions. I was so nervous that I could {34} speak, but Anna {35} to explain everything clearly. {36} our fears, we won second prize!",
+ gaps:[
+ {o:["take","have","make","do"], a:0, e:"Участвовать — <b>take part</b>."},
+ {o:["adapt","adopt","admit","accept"], a:0, e:"Приспосабливаться — <b>adapt to</b>."},
+ {o:["record","remember","remind","recall"], a:0, e:"Записывать результаты — <b>record</b>."},
+ {o:["miss","lose","fail","lack"], a:0, e:"Пропустить день — <b>miss a day</b>."},
+ {o:["hardly","nearly","hard","highly"], a:0, e:"Едва могла говорить — <b>could hardly</b>."},
+ {o:["managed","succeeded","achieved","coped"], a:0, e:"После пропуска to + глагол → <b>managed to</b>."},
+ {o:["Despite","Although","However","Because of"], a:0, e:"Дальше существительное, уступка → <b>Despite</b>."}
+ ]}
+];
+
+
+// ===== Дополнение: новые юниты =====
+UNITS.push(
+{id:"u16", group:"Глаголы-двойники", title:"rob / steal, borrow / lend, win / beat / earn",
+ hint:"<b>steal</b> вещь, <b>rob</b> человека или банк. <b>borrow</b> — взять взаймы, <b>lend</b> — дать взаймы. <b>win</b> матч или приз, <b>beat</b> соперника, <b>earn</b> деньги. <b>hear</b> — слышать, <b>listen to</b> — слушать. <b>teach</b> — учить кого-то.",
+ Q:[
+ {s:"Someone ___ my bike yesterday.", o:["stole","robbed","borrowed","lent"], a:0, e:"Украсть вещь — <b>steal</b>, в прошедшем stole."},
+ {s:"Two men ___ a bank in the city centre.", o:["robbed","stole","took","borrowed"], a:0, e:"Ограбить банк или человека — <b>rob</b>."},
+ {s:"Could you ___ me your pen for a minute?", o:["lend","borrow","take","rent"], a:0, e:"Дать взаймы кому-то — <b>lend sb sth</b>."},
+ {s:"Can I ___ your umbrella? I’ll return it tomorrow.", o:["borrow","lend","rent","owe"], a:0, e:"Взять взаймы — <b>borrow</b>."},
+ {s:"Our team ___ the match 3–1.", o:["won","beat","earned","gained"], a:0, e:"Выиграть матч — <b>win a match</b>."},
+ {s:"Our team ___ the champions 3–1.", o:["beat","won","earned","gained"], a:0, e:"Победить соперника — <b>beat sb</b>."},
+ {s:"She ___ a lot of money as a lawyer.", o:["earns","wins","gains","beats"], a:0, e:"Зарабатывать деньги — <b>earn</b>."},
+ {s:"I ___ him some money, so he has to pay me back.", o:["lent","borrowed","owed","rented"], a:0, e:"Я дал взаймы — <b>lent</b>."},
+ {s:"Do you ___ to the radio in the morning?", o:["listen","hear","sound","watch"], a:0, e:"После пропуска to → <b>listen to</b>."},
+ {s:"Speak louder, please; I can’t ___ you.", o:["hear","listen","sound","notice"], a:0, e:"Слышать — <b>hear</b>, без предлога."},
+ {s:"My mum ___ me how to ride a bike.", o:["taught","learnt","studied","explained"], a:0, e:"Научить кого-то — <b>teach sb</b>. explain me — ошибка."}
+ ]},
+{id:"u17", group:"Линкеры и связки", title:"unless / whereas / instead of / so that",
+ hint:"<b>unless</b> = if not. <b>as long as</b> — при условии, что. <b>whereas</b> — тогда как. <b>instead of</b> + -ing. <b>in order to</b> + глагол, <b>so that</b> + предложение. <b>because of</b> + существительное.",
+ Q:[
+ {s:"You won’t pass the exam ___ you work harder.", o:["unless","if","in case","until"], a:0, e:"Если не… — <b>unless</b>."},
+ {s:"You can borrow my car ___ you drive carefully.", o:["as long as","unless","whereas","in case"], a:0, e:"При условии, что — <b>as long as</b>."},
+ {s:"My sister loves sport, ___ I prefer reading.", o:["whereas","despite","unless","therefore"], a:0, e:"Противопоставление двух людей — <b>whereas</b>."},
+ {s:"Let’s walk ___ taking a taxi.", o:["instead of","in spite of","apart from","because of"], a:0, e:"Вместо того чтобы — <b>instead of</b> + -ing."},
+ {s:"___ from English, she speaks French and Spanish.", o:["Apart","Instead","Despite","Except"], a:0, e:"Кроме (в дополнение к) — <b>apart from</b>. except from не говорят."},
+ {s:"He left early ___ catch the last train.", o:["in order to","so that","because","so as"], a:0, e:"Цель + глагол → <b>in order to</b>. so as требует to."},
+ {s:"Speak slowly ___ everyone can understand you.", o:["so that","in order to","so as to","because of"], a:0, e:"Цель + целое предложение → <b>so that</b>."},
+ {s:"We stayed at home ___ the storm.", o:["because of","because","although","since"], a:0, e:"Причина + существительное → <b>because of</b>."},
+ {s:"___ he was tired, he kept working.", o:["Even though","Despite","In spite of","However"], a:0, e:"Уступка + целое предложение → <b>Even though</b>."},
+ {s:"Call me ___ you arrive, please.", o:["as soon as","until","unless","whereas"], a:0, e:"Как только — <b>as soon as</b>."}
+ ]},
+{id:"u18", group:"Коллокации", title:"give / get / come / run / lose",
+ hint:"<b>give birth to</b>, <b>get rid of</b>, <b>come true</b>, <b>run a business</b>, <b>break a record</b>, <b>keep in touch</b>, <b>go bankrupt</b>, <b>lose your temper</b>, <b>catch a cold</b>, <b>take into account</b>.",
+ Q:[
+ {s:"She ___ birth to twins.", o:["gave","made","took","got"], a:0, e:"<b>give birth to</b> — родить."},
+ {s:"We need to get ___ of these old boxes.", o:["rid","free","away","out"], a:0, e:"<b>get rid of</b> — избавиться."},
+ {s:"His dream finally came ___.", o:["true","real","right","truth"], a:0, e:"<b>come true</b> — сбыться."},
+ {s:"She ___ her own business.", o:["runs","leads","makes","does"], a:0, e:"<b>run a business</b> — вести бизнес."},
+ {s:"He ___ the world record in the 100 metres.", o:["broke","defeated","won","cracked"], a:0, e:"<b>break a record</b> — побить рекорд."},
+ {s:"Let’s ___ in touch after school ends.", o:["keep","hold","take","make"], a:0, e:"<b>keep in touch</b> — оставаться на связи."},
+ {s:"The company went ___ last year.", o:["bankrupt","poor","empty","failed"], a:0, e:"<b>go bankrupt</b> — обанкротиться."},
+ {s:"Don’t ___ your temper!", o:["lose","miss","drop","fail"], a:0, e:"<b>lose your temper</b> — выйти из себя."},
+ {s:"He ___ a cold last week.", o:["caught","took","made","fell"], a:0, e:"<b>catch a cold</b> — простудиться."},
+ {s:"Thanks for the warning — I’ll ___ it into account.", o:["take","put","bring","keep"], a:0, e:"<b>take into account</b> — учесть."}
+ ]},
+{id:"u19", group:"Фразовые глаголы", title:"come across / bring up / put up with",
+ hint:"<b>come across</b> — наткнуться, <b>bring up</b> — воспитать, <b>look up to</b> — уважать, <b>put up with</b> — терпеть, <b>turn down</b> — отказать, <b>carry out</b> — проводить, <b>set up</b> — основать, <b>break down</b> — сломаться, <b>run into</b> — случайно встретить, <b>call off</b> — отменить.",
+ Q:[
+ {s:"I came ___ an old photo while cleaning.", o:["across","over","out","up"], a:0, e:"<b>come across</b> — случайно найти."},
+ {s:"She was brought ___ by her grandparents.", o:["up","out","over","about"], a:0, e:"<b>bring up</b> — воспитывать."},
+ {s:"I really look ___ to my older brother.", o:["up","after","for","into"], a:0, e:"<b>look up to</b> — уважать, равняться на."},
+ {s:"I can’t put up ___ this noise any longer.", o:["with","for","to","on"], a:0, e:"<b>put up with</b> — терпеть."},
+ {s:"He turned ___ the job offer.", o:["down","off","over","away"], a:0, e:"<b>turn down</b> — отклонить."},
+ {s:"Scientists carried ___ a series of experiments.", o:["out","off","on","over"], a:0, e:"<b>carry out</b> — проводить (опыты, исследования)."},
+ {s:"They set ___ a new company in 2020.", o:["up","off","out","in"], a:0, e:"<b>set up</b> — основать."},
+ {s:"Our car broke ___ on the way home.", o:["down","up","out","off"], a:0, e:"<b>break down</b> — сломаться."},
+ {s:"I ran ___ an old friend at the station.", o:["into","after","through","off"], a:0, e:"<b>run into sb</b> — случайно встретить."},
+ {s:"The match was called ___ because of the rain.", o:["off","out","up","down"], a:0, e:"<b>call off</b> — отменить."}
+ ]},
+{id:"u20", group:"Предлоги", title:"insist on / consist of / blame for",
+ hint:"Учи вместе с предлогом: congratulate <b>on</b>, insist <b>on</b>, rely <b>on</b>, consist <b>of</b>, accuse <b>of</b>, blame <b>for</b>, responsible <b>for</b>, aware <b>of</b>, capable <b>of</b>, be used <b>to</b> + -ing.",
+ Q:[
+ {s:"Congratulations ___ your new job!", o:["on","for","with","about"], a:0, e:"<b>congratulations on</b>."},
+ {s:"She insisted ___ paying for dinner.", o:["on","in","at","for"], a:0, e:"<b>insist on</b> + -ing."},
+ {s:"You can always rely ___ me.", o:["on","at","to","in"], a:0, e:"<b>rely on</b>."},
+ {s:"The team consists ___ eleven players.", o:["of","from","in","with"], a:0, e:"<b>consist of</b>."},
+ {s:"He was accused ___ stealing.", o:["of","for","in","with"], a:0, e:"<b>accuse sb of</b>."},
+ {s:"Don’t blame me ___ your mistakes.", o:["for","of","in","about"], a:0, e:"<b>blame sb for</b>."},
+ {s:"Who is responsible ___ this project?", o:["for","of","to","at"], a:0, e:"<b>responsible for</b>."},
+ {s:"Are you aware ___ the risks?", o:["of","in","at","to"], a:0, e:"<b>aware of</b>."},
+ {s:"She is capable ___ doing much better.", o:["of","in","at","for"], a:0, e:"<b>capable of</b> + -ing."},
+ {s:"I’m not used ___ getting up so early.", o:["to","with","at","for"], a:0, e:"<b>be used to</b> + -ing — привыкнуть."}
+ ]},
+{id:"u21", group:"Паронимы", title:"sensible / sensitive, classic / classical",
+ hint:"<b>sensible</b> — разумный, <b>sensitive</b> — чувствительный. <b>classical</b> музыка, <b>classic</b> — типичный. <b>imaginative</b> — с фантазией, <b>imaginary</b> — воображаемый. <b>respectful</b> — уважительный. <b>principal</b> — директор, <b>principle</b> — принцип.",
+ Q:[
+ {s:"It was a ___ decision to save some money.", o:["sensible","sensitive","sensational","sensory"], a:0, e:"Разумный — <b>sensible</b>."},
+ {s:"She is very ___; she cries at sad films.", o:["sensitive","sensible","sensational","senseless"], a:0, e:"Чувствительный — <b>sensitive</b>."},
+ {s:"My grandfather enjoys ___ novels about the Middle Ages.", o:["historical","historic","history","historian"], a:0, e:"О событиях прошлого — <b>historical</b> novels."},
+ {s:"Mozart wrote ___ music.", o:["classical","classic","classy","classified"], a:0, e:"Классическая музыка — <b>classical music</b>."},
+ {s:"This is a ___ example of a beginner’s mistake.", o:["classic","classical","classy","classified"], a:0, e:"Типичный — <b>classic</b>."},
+ {s:"The new method is more ___: it saves time and energy.", o:["efficient","sufficient","proficient","deficient"], a:0, e:"Экономичный, производительный — <b>efficient</b>."},
+ {s:"Children often have very ___ minds.", o:["imaginative","imaginary","imaginable","imagined"], a:0, e:"С богатой фантазией — <b>imaginative</b>."},
+ {s:"The dragon is an ___ creature.", o:["imaginary","imaginative","imaginable","imagination"], a:0, e:"Воображаемый, вымышленный — <b>imaginary</b>."},
+ {s:"Be ___ to older people.", o:["respectful","respectable","respective","respected"], a:0, e:"Уважительный к кому-то — <b>respectful to</b>."},
+ {s:"The school ___ congratulated all the students.", o:["principal","principle","prince","primary"], a:0, e:"Директор школы — <b>principal</b>."},
+ {s:"I agree with you in ___.", o:["principle","principal","prince","primary"], a:0, e:"В принципе — <b>in principle</b>."}
+ ]}
+);
+
+// ===== Дополнение: новые тексты =====
+EXAMS.push(
+{id:"e7", title:"The job interview",
+ text:"Mark had been preparing for the job interview for a week. On the morning of the interview, he woke up early and {30} on his best suit. He wanted to {31} a good impression, so he arrived twenty minutes early. The receptionist asked him to take a {32} and wait. Mark felt nervous, but he {33} himself that he was well prepared. When he was finally invited in, the manager {34} him a few difficult questions. Mark answered them calmly, {35} he was not sure about one of the answers. A week later, he got a call: he had {36} the job.",
+ gaps:[
+ {o:["put","wore","dressed","took"],a:0,e:"После пропуска on → <b>put on</b> — надеть."},
+ {o:["make","do","give","take"],a:0,e:"<b>make an impression</b>."},
+ {o:["seat","place","chair","sit"],a:0,e:"<b>take a seat</b> — присесть."},
+ {o:["reminded","remembered","recalled","memorized"],a:0,e:"<b>remind yourself that…</b> — напомнить себе."},
+ {o:["asked","questioned","requested","demanded"],a:0,e:"<b>ask sb a question</b>."},
+ {o:["although","despite","however","because"],a:0,e:"Уступка + целое предложение → <b>although</b>."},
+ {o:["got","won","earned","achieved"],a:0,e:"Получить работу — <b>get the job</b>."}
+ ]},
+{id:"e8", title:"A family tradition",
+ text:"Every summer my family goes camping by a lake. It is a tradition that {30} back to my grandfather’s childhood. We usually {31} off very early to avoid traffic. My dad always {32} up the tent, while my sister and I collect wood for the fire. In the evenings, we sit around the fire and my grandfather {33} us stories about his youth. Last year it rained heavily, and we had to {34} our trip short. {35}, everyone agreed that it was still the best week of the summer. I hope we will {36} this tradition for many years.",
+ gaps:[
+ {o:["goes","turns","comes","runs"],a:0,e:"<b>go back to</b> — восходить к, уходить корнями в."},
+ {o:["set","get","put","take"],a:0,e:"<b>set off</b> — отправиться в путь."},
+ {o:["puts","takes","gets","brings"],a:0,e:"<b>put up a tent</b> — поставить палатку."},
+ {o:["tells","says","speaks","talks"],a:0,e:"После пропуска человек и stories → <b>tell sb stories</b>."},
+ {o:["cut","make","keep","stop"],a:0,e:"<b>cut sth short</b> — прервать раньше времени."},
+ {o:["However","Although","Despite","Moreover"],a:0,e:"Начало предложения с запятой, противопоставление → <b>However,</b>"},
+ {o:["keep","hold","stay","remain"],a:0,e:"Сохранять традицию — <b>keep a tradition</b>."}
+ ]},
+{id:"e9", title:"The science project",
+ text:"Olga had always been interested {30} chemistry. When her teacher suggested taking part in a regional science competition, she {31} at once. Her project was about how to get {32} of plastic waste. She spent hours in the school lab, {33} experiments and writing down the results. At first nothing worked, but she didn’t give {34}. Finally, she {35} to find a way to break down plastic faster. The judges were impressed, and her project {36} first place.",
+ gaps:[
+ {o:["in","at","on","of"],a:0,e:"<b>interested in</b>."},
+ {o:["agreed","accepted","allowed","admitted"],a:0,e:"Согласилась, без дополнения → <b>agreed</b>."},
+ {o:["rid","free","away","out"],a:0,e:"<b>get rid of</b> — избавиться."},
+ {o:["doing","making","taking","having"],a:0,e:"<b>do experiments</b> — проводить опыты."},
+ {o:["up","in","out","off"],a:0,e:"<b>give up</b> — сдаваться."},
+ {o:["managed","succeeded","achieved","coped"],a:0,e:"После пропуска to + глагол → <b>managed to</b>."},
+ {o:["won","beat","earned","gained"],a:0,e:"<b>win first place</b>."}
+ ]},
+{id:"e10", title:"A new city",
+ text:"When I was fifteen, my family moved to Saint Petersburg. At first, I found it difficult to {30} to my new school. I didn’t know anyone, and I often felt {31} out. One day a girl from my class {32} me to join the school theatre club. I wasn’t sure, but I decided to {33} it a try. It turned out to be the best decision I have ever {34}. We rehearsed every week, and soon I had {35} friends with almost everyone in the club. Now I can’t imagine my life {36} theatre.",
+ gaps:[
+ {o:["adapt","adopt","admit","accept"],a:0,e:"Приспособиться — <b>adapt to</b>."},
+ {o:["left","kept","put","cut"],a:0,e:"<b>feel left out</b> — чувствовать себя лишним."},
+ {o:["invited","suggested","offered","proposed"],a:0,e:"<b>invite sb to do</b>. suggest и propose так не употребляются с человеком."},
+ {o:["give","make","take","do"],a:0,e:"<b>give it a try</b> — попробовать."},
+ {o:["made","done","taken","had"],a:0,e:"<b>make a decision</b>."},
+ {o:["made","done","had","taken"],a:0,e:"<b>make friends with</b>."},
+ {o:["without","except","apart","besides"],a:0,e:"Без чего-то — <b>without</b>."}
+ ]},
+{id:"f26_1", fipi:true, title:"ФИПИ 2026 · Henry",
+ source:"Открытый вариант КИМ ЕГЭ 2026 по английскому языку, ФИПИ. Ответы — мои: в архиве ФИПИ ключа нет.",
+ text:"It was impossible for Henry to get to his office in half an hour. The wind was howling, and the cars were stuck in snowdrifts. He couldn’t {30} a day like that. The buses had been somewhere around Park Avenue, where they sat huddled like frozen dinosaurs, as one left the flock only very rarely to {31} up a few brave travellers. The travellers rushed from doorways frantically waving their arms, sliding wildly to the curb. They mounted the buses with damp eyes and red faces, and in Henry’s case, icicles on his beard. It had been absolutely impossible to get a taxi. He had given {32} after fifteen minutes of waiting and started walking south from his street. Henry often walked to work. It was only eighteen blocks from door to door. Today he soon {33} that the biting wind was brutal, and he had only gone four more blocks when he had already been out of breath. A friendly doorman {34} him to wait in the lobby. Henry thought that the other, more sensible souls when they caught their first glimpse of the blizzard that morning had {35} not to go to work at all. Henry was sure that the store would be half empty. But he wasn’t the type to sit at home twiddling his thumbs or watching serials. And it wasn’t that he went to work because he was too compulsive. The truth was that Henry went to work six days a week simply because he loved the store very much, {36} often, like today, he didn’t have to come.",
+ gaps:[
+  {o:["receive","remind","remember","recognize"],a:2,e:"Ответ <b>3) remember</b>. couldn’t remember a day like that — не мог припомнить такого дня. remind требует человека."},
+  {o:["seize","grab","catch","pick"],a:3,e:"Ответ <b>4) pick</b>. <b>pick up</b> passengers — подбирать пассажиров."},
+  {o:["up","of","out","off"],a:0,e:"Ответ <b>1) up</b>. <b>give up</b> — сдаться, перестать (ждать)."},
+  {o:["realized","regarded","remained","repeated"],a:0,e:"Ответ <b>1) realized</b>. realize that… — понять, что…"},
+  {o:["approved","afforded","allowed","accepted"],a:2,e:"Ответ <b>3) allowed</b>. <b>allow sb to do</b>."},
+  {o:["directed","depended","demanded","decided"],a:3,e:"Ответ <b>4) decided</b>. <b>decide not to do</b>."},
+  {o:["until","though","because","despite"],a:1,e:"Ответ <b>2) though</b> — хотя. despite требует существительного."}
+ ]}
+);
+
+
+// ===== Подуроки и хард-уровень (в стиле продвинутых сборников) =====
+function QQ(list){return list.map(function(x){return {s:x[0],o:x[1],a:0,e:x[2]};});}
+UNITS.push(
+{id:"n1",group:"Глаголы-двойники",title:"offer / suggest / propose, refuse / deny / avoid",
+ hint:"<b>suggest that</b> / suggest doing. <b>offer to do</b> — предложить сделать самому. <b>propose to sb</b> — сделать предложение. <b>deny doing</b> — отрицать. <b>refuse to do</b> — отказаться. <b>reject</b> — отклонить. <b>avoid doing</b>, <b>prevent sb from</b>.",
+ Q:QQ([
+ ["She ___ that we should take a break.",["suggested","offered","invited","encouraged"],"<b>suggest that…</b> — предложить идею."],
+ ["He ___ to help me with my bags.",["offered","suggested","advised","insisted"],"Предложить сделать самому — <b>offer to do</b>."],
+ ["He ___ to her on Valentine’s Day, and she said yes.",["proposed","offered","suggested","invited"],"Сделать предложение руки и сердца — <b>propose to sb</b>."],
+ ["He ___ breaking the window, but everyone knew it was him.",["denied","refused","rejected","declined"],"Отрицать — <b>deny doing</b>."],
+ ["She ___ to answer any questions.",["refused","denied","rejected","avoided"],"Отказаться — <b>refuse to do</b>."],
+ ["The publisher ___ her first novel.",["rejected","denied","avoided","resisted"],"Отклонить рукопись — <b>reject</b>."],
+ ["I’d ___ this restaurant to anyone.",["recommend","advise","offer","propose"],"Рекомендовать что-то — <b>recommend sth to sb</b>."],
+ ["Try to ___ eating too much sugar.",["avoid","refuse","deny","prevent"],"Избегать — <b>avoid doing</b>."],
+ ["Nothing could ___ him from leaving.",["prevent","avoid","refuse","deny"],"Помешать — <b>prevent sb from doing</b>."],
+ ["Smoking is strictly ___ here.",["forbidden","prevented","avoided","refused"],"Запрещено — <b>forbidden</b>."]])},
+{id:"n2",group:"Глаголы-двойники",title:"cost / spend / pay / charge, fit / suit / match",
+ hint:"Вещь <b>costs</b>, человек <b>spends</b> деньги/время on, <b>pays for</b>, продавец <b>charges</b>. <b>fit</b> — по размеру, <b>suit</b> — к лицу, <b>match</b> — сочетаться, <b>go with</b> — подходить к.",
+ Q:QQ([
+ ["How much did your new phone ___?",["cost","spend","pay","charge"],"Вещь стоит — <b>cost</b>."],
+ ["I ___ two hours doing my homework.",["spent","cost","paid","passed"],"Потратить время — <b>spend</b>."],
+ ["It’s a ___ of money to buy that.",["waste","loss","spend","cost"],"Пустая трата — <b>a waste of money</b>."],
+ ["How much did you ___ for the tickets?",["pay","cost","spend","charge"],"После пропуска for → <b>pay for</b>."],
+ ["The hotel ___ us extra for breakfast.",["charged","paid","spent","payed"],"Брать плату — <b>charge sb for</b>."],
+ ["Her bag ___ her shoes perfectly.",["matches","fits","suits","goes"],"Сочетаться по цвету и стилю — <b>match</b>. go требует with."],
+ ["Does this tie go ___ my shirt?",["with","to","for","on"],"<b>go with</b> — подходить к."],
+ ["Short hair really ___ you.",["suits","fits","matches","goes"],"Быть к лицу — <b>suit</b>."],
+ ["This key doesn’t ___ the lock.",["fit","suit","match","go"],"Подходить по размеру — <b>fit</b>."],
+ ["It ___ me a fortune to repair the car.",["cost","paid","spent","charged"],"<b>it cost sb</b> — обошлось кому-то."]])},
+{id:"n3",group:"Линкеры и связки",title:"nevertheless / on the contrary / as a result",
+ hint:"<b>Nevertheless,</b> — тем не менее. <b>On the contrary</b> — напротив (опровергает). <b>On the other hand</b> — с другой стороны. <b>As a result</b> — в результате. <b>In spite of</b> + сущ. <b>Owing to</b> + сущ. — из-за.",
+ Q:QQ([
+ ["The weather was awful. ___, we enjoyed the trip.",["Nevertheless","Despite","Although","Because"],"Начало предложения с запятой, уступка → <b>Nevertheless,</b>"],
+ ["He isn’t lazy. ___, he works harder than anyone.",["On the contrary","In addition","As a result","In case"],"Опровержение — <b>On the contrary</b>."],
+ ["The roads were icy. ___, there were many accidents.",["As a result","On the contrary","Nevertheless","Instead"],"Следствие — <b>As a result</b>."],
+ ["___ his injury, he finished the race.",["In spite of","Although","However","Even though"],"Дальше существительное → <b>In spite of</b>."],
+ ["The flat is small. On the other ___, it’s very cheap.",["hand","side","part","way"],"<b>on the other hand</b>."],
+ ["___, I’d like to thank my parents.",["First of all","At first","In first","For first"],"Перечисление — <b>First of all</b>. At first — «сначала, вначале»."],
+ ["___ I know, he has already left.",["As far as","As long as","As soon as","As well as"],"<b>As far as I know</b> — насколько я знаю."],
+ ["She speaks Spanish ___ well as Italian.",["as","so","such","too"],"<b>as well as</b> — а также."],
+ ["___ the bad weather, the match was cancelled.",["Owing to","Despite","In spite","Although"],"Причина + существительное → <b>Owing to</b>."],
+ ["Check the facts; ___, people might not trust you.",["otherwise","however","therefore","unless"],"Иначе — <b>otherwise</b>."]])},
+{id:"n4",group:"Коллокации",title:"pay / draw / hold / raise / play",
+ hint:"<b>pay a compliment</b>, <b>draw attention to</b>, <b>hold a meeting</b>, <b>raise money</b>, <b>hold your breath</b>, <b>lend a hand</b>, <b>jump to conclusions</b>, <b>take a deep breath</b>, <b>play a role</b>, <b>take responsibility</b>.",
+ Q:QQ([
+ ["He ___ her a compliment on her dress.",["paid","did","took","held"],"<b>pay sb a compliment</b>."],
+ ["She ___ our attention to the mistake.",["drew","paid","took","held"],"<b>draw sb’s attention to</b>."],
+ ["The meeting will be ___ on Monday.",["held","kept","made","done"],"<b>hold a meeting</b>."],
+ ["They organised a concert to ___ money for the hospital.",["raise","rise","lift","grow"],"Собрать деньги — <b>raise money</b>."],
+ ["Please ___ your breath for ten seconds.",["hold","keep","stop","save"],"<b>hold your breath</b>."],
+ ["Can you ___ me a hand with this box?",["lend","borrow","take","hold"],"<b>lend sb a hand</b> — помочь."],
+ ["Don’t jump ___ conclusions too quickly.",["to","at","on","into"],"<b>jump to conclusions</b>."],
+ ["She ___ a deep breath and started to sing.",["took","made","did","gave"],"<b>take a deep breath</b>."],
+ ["He ___ an important role in the project.",["played","did","made","took"],"<b>play a role</b>."],
+ ["Who will ___ responsibility for this?",["take","make","do","keep"],"<b>take responsibility</b>."]])},
+{id:"n5",group:"Коллокации",title:"lose / miss / fail / lack",
+ hint:"<b>lose</b> вещь, матч, вес. <b>miss</b> поезд, шанс, человека (скучать). <b>fail</b> экзамен, fail to do. <b>lack</b> — не хватать (lack confidence, без of).",
+ Q:QQ([
+ ["Hurry up or we’ll ___ the train.",["miss","lose","fail","lack"],"Опоздать на поезд — <b>miss</b>."],
+ ["I ___ my keys again.",["lost","missed","failed","lacked"],"Потерять вещь — <b>lose</b>."],
+ ["I really ___ my friends when I’m away.",["miss","lose","lack","fail"],"Скучать — <b>miss sb</b>."],
+ ["He ___ to understand the question.",["failed","missed","lost","lacked"],"Не суметь — <b>fail to do</b>."],
+ ["The team ___ the final 2–0.",["lost","missed","failed","beat"],"Проиграть матч — <b>lose</b>."],
+ ["He ___ confidence when speaking in public.",["lacks","misses","fails","wants"],"Не хватать — <b>lack sth</b>, без предлога."],
+ ["Don’t ___ this opportunity!",["miss","fail","lack","drop"],"Упустить шанс — <b>miss an opportunity</b>."],
+ ["She ___ weight after the illness.",["lost","missed","failed","lacked"],"Похудеть — <b>lose weight</b>."],
+ ["The plan ___ because nobody supported it.",["failed","lost","missed","lacked"],"Провалиться — <b>fail</b>."],
+ ["There’s a ___ of water in the region.",["lack","miss","fail","need"],"Нехватка — <b>a lack of</b>."]])},
+{id:"n6",group:"Фразовые глаголы",title:"get + частицы",
+ hint:"<b>get on (with)</b> — ладить, продвигаться. <b>get over</b> — оправиться. <b>get off</b> — выйти из транспорта. <b>get away with</b> — избежать наказания. <b>get through to</b> — дозвониться. <b>get down to</b> — приступить. <b>get round</b> — обойти (проблему).",
+ Q:QQ([
+ ["I get ___ well with my sister.",["on","off","over","up"],"<b>get on well with</b> — хорошо ладить."],
+ ["It took her months to get ___ the illness.",["over","off","on","up"],"<b>get over</b> — оправиться."],
+ ["What time do you usually get ___ in the morning?",["up","on","off","over"],"<b>get up</b> — вставать."],
+ ["We got ___ the bus at the last stop.",["off","away","over","up"],"Выйти из автобуса — <b>get off</b>."],
+ ["The thief got ___ with the money.",["away","off","over","out"],"<b>get away with</b> — сбежать, избежать наказания."],
+ ["I can’t get ___ to him; his phone is always off.",["through","over","on","away"],"<b>get through to sb</b> — дозвониться."],
+ ["How are you getting ___ with your project?",["on","off","up","over"],"<b>get on with</b> — продвигаться."],
+ ["Let’s get ___ to business.",["down","up","on","over"],"<b>get down to</b> — приступить."],
+ ["She couldn’t get ___ of bed this morning.",["out","off","away","over"],"<b>get out of bed</b>."],
+ ["We need to get ___ this problem somehow.",["round","off","up","away"],"<b>get round a problem</b> — обойти проблему."]])},
+{id:"n7",group:"Фразовые глаголы",title:"go / come + частицы",
+ hint:"<b>go off</b> — зазвенеть, испортиться. <b>go up</b> — расти. <b>go on</b> — продолжать. <b>go out</b> — погаснуть. <b>go over</b> — просмотреть. <b>come up with</b> — придумать. <b>come about</b> — случиться. <b>come out</b> — выйти (о книге). <b>come round</b> — прийти в себя.",
+ Q:QQ([
+ ["The alarm went ___ at 6 a.m.",["off","on","out","up"],"Будильник зазвенел — <b>go off</b>."],
+ ["Prices keep going ___.",["up","on","off","over"],"Расти — <b>go up</b>."],
+ ["Go ___, I’m listening.",["on","up","off","over"],"Продолжай — <b>go on</b>."],
+ ["The lights went ___ during the storm.",["out","away","up","over"],"Погаснуть — <b>go out</b>."],
+ ["Let’s go ___ the plan once again.",["over","off","up","away"],"Просмотреть, повторить — <b>go over</b>."],
+ ["She came ___ with a brilliant idea.",["up","out","over","across"],"Придумать — <b>come up with</b>."],
+ ["How did the accident come ___?",["about","up","over","off"],"Случиться — <b>come about</b>."],
+ ["The new book comes ___ next month.",["out","up","off","over"],"Выйти (о книге) — <b>come out</b>."],
+ ["When I came ___, I was in hospital.",["round","out","over","off"],"Прийти в сознание — <b>come round</b>."],
+ ["This milk has gone ___; don’t drink it.",["off","out","down","away"],"Испортиться — <b>go off</b>."]])},
+{id:"n8",group:"Предлоги",title:"существительное + предлог",
+ hint:"attitude <b>to</b>, increase <b>in</b>, interest <b>in</b>, invitation <b>to</b>, cause <b>of</b>, respect <b>for</b>, difference <b>between</b>, demand <b>for</b>, talent <b>for</b>, need <b>to do</b>.",
+ Q:QQ([
+ ["There’s no need ___ worry.",["to","for","of","in"],"need + глагол → <b>need to do</b>."],
+ ["Her attitude ___ work has changed.",["to","for","at","of"],"<b>attitude to</b>."],
+ ["There has been an increase ___ prices.",["in","of","on","at"],"<b>an increase in</b>."],
+ ["He has no interest ___ politics.",["in","to","for","at"],"<b>interest in</b>."],
+ ["Thank you for the invitation ___ your party.",["to","for","on","at"],"<b>invitation to</b>."],
+ ["The cause ___ the fire is unknown.",["of","for","to","in"],"<b>the cause of</b>."],
+ ["I have great respect ___ my teachers.",["for","to","of","at"],"<b>respect for</b>."],
+ ["What’s the difference ___ these two words?",["between","among","of","in"],"<b>difference between</b>."],
+ ["There is a high demand ___ electric cars.",["for","of","on","to"],"<b>demand for</b>."],
+ ["She has a talent ___ music.",["for","to","in","of"],"<b>talent for</b>."]])},
+{id:"n9",group:"Устойчивые выражения",title:"by heart / on purpose / at first / in the end",
+ hint:"<b>by heart</b> — наизусть, <b>on purpose</b> — нарочно, <b>at first</b> — сначала, <b>in the end</b> — в конце концов, <b>in a hurry</b>, <b>out of order</b>, <b>in my opinion</b>, <b>on time</b> — точно вовремя, <b>under control</b>, <b>in any case</b>.",
+ Q:QQ([
+ ["I learnt the poem ___ heart.",["by","in","on","at"],"<b>by heart</b> — наизусть."],
+ ["Did you break it ___ purpose?",["on","by","in","at"],"<b>on purpose</b> — нарочно."],
+ ["___ first, I didn’t like the city, but now I love it.",["At","In","On","By"],"<b>At first</b> — сначала."],
+ ["___ the end, we found the right street.",["In","At","On","By"],"<b>In the end</b> — в конце концов."],
+ ["I’m ___ a hurry, sorry!",["in","on","at","by"],"<b>in a hurry</b>."],
+ ["The lift is out ___ order.",["of","from","off","in"],"<b>out of order</b> — не работает."],
+ ["___ my opinion, the film was too long.",["In","On","By","For"],"<b>In my opinion</b>."],
+ ["The train left exactly ___ time, at 9:00.",["on","in","at","by"],"Точно по расписанию — <b>on time</b>. in time — заранее, успеть."],
+ ["Everything is ___ control.",["under","in","on","at"],"<b>under control</b>."],
+ ["___ any case, call me when you arrive.",["In","At","On","By"],"<b>In any case</b> — в любом случае."]])},
+{id:"n10",group:"Устойчивые выражения",title:"idioms: under the weather, spill the beans",
+ hint:"Идиомы учат целиком: <b>under the weather</b> — неважно себя чувствовать, <b>break a leg</b> — ни пуха ни пера, <b>call it a day</b> — закончить, <b>beat around the bush</b> — ходить вокруг да около, <b>spill the beans</b> — проболтаться.",
+ Q:QQ([
+ ["I’m feeling a bit under the ___ today.",["weather","rain","sky","cloud"],"<b>under the weather</b> — неважно себя чувствовать."],
+ ["Break a ___ in your exam!",["leg","arm","hand","foot"],"<b>Break a leg!</b> — Удачи!"],
+ ["It’s raining cats and ___.",["dogs","mice","birds","fish"],"<b>raining cats and dogs</b> — льёт как из ведра."],
+ ["Let’s call it a ___; we’re all tired.",["day","night","time","end"],"<b>call it a day</b> — закончить на сегодня."],
+ ["Don’t beat around the ___; tell me what happened.",["bush","tree","house","garden"],"<b>beat around the bush</b> — ходить вокруг да около."],
+ ["That joke went over my ___.",["head","eyes","mind","ears"],"<b>go over sb’s head</b> — быть непонятным."],
+ ["I’ll keep my ___ crossed for you.",["fingers","hands","arms","legs"],"<b>keep your fingers crossed</b> — держать кулачки."],
+ ["You hit the ___ on the head!",["nail","hammer","point","mark"],"<b>hit the nail on the head</b> — попасть в точку."],
+ ["We’re all in the same ___.",["boat","ship","house","room"],"<b>in the same boat</b> — в одной лодке."],
+ ["He spilled the ___ about the surprise party.",["beans","milk","tea","water"],"<b>spill the beans</b> — проболтаться."]])},
+{id:"n11",group:"Существительные и прилагательные",title:"cost / value, client / customer, job / work",
+ hint:"<b>the cost of living</b>, <b>sentimental value</b>. <b>customers</b> — в магазине, <b>clients</b> — у юриста, банка. <b>a job</b> — исчисляемое, <b>work</b> — неисчисляемое. <b>advice</b>, <b>information</b> — без множественного числа.",
+ Q:QQ([
+ ["The ___ of living in big cities is high.",["cost","price","value","fee"],"<b>the cost of living</b> — стоимость жизни."],
+ ["The ring has great sentimental ___.",["value","price","cost","fee"],"<b>sentimental value</b> — памятная ценность."],
+ ["The shop was full of ___.",["customers","clients","guests","hosts"],"Покупатели в магазине — <b>customers</b>."],
+ ["The lawyer has many ___.",["clients","customers","guests","consumers"],"Клиенты юриста — <b>clients</b>."],
+ ["Drinking and driving is against the ___.",["law","rule","norm","right"],"<b>against the law</b> — незаконно."],
+ ["I’m looking for a part-time ___.",["job","work","career","profession"],"Исчисляемое «работа, должность» — <b>a job</b>."],
+ ["She has a successful ___ in medicine.",["career","job","work","occupation"],"Карьера — <b>career</b>."],
+ ["Hard ___ always pays off.",["work","job","career","occupation"],"Неисчисляемое «труд» — <b>work</b>."],
+ ["Can you give me some ___? I don’t know what to do.",["advice","advices","tip","council"],"<b>advice</b> — неисчисляемое, без -s."],
+ ["I need some ___ about train times.",["information","informations","knowledge","notice"],"<b>information</b> — неисчисляемое, без -s."]])},
+// ---- Хард ----
+{id:"x1",group:"Хард",title:"Синонимы-ловушки: глаголы",
+ hint:"Сложнее ЕГЭ. <b>attend</b> лекцию, <b>visit</b> людей и места, <b>enter</b> конкурс. <b>discover</b> то, что существовало, <b>invent</b> то, чего не было. <b>found</b> (founded) — основать. <b>fall</b> (fallen) — падать само, <b>drop</b> — уронить.",
+ Q:QQ([
+ ["The museum ___ a large collection of icons.",["houses","lives","settles","inhabits"],"Вмещать, хранить коллекцию — <b>house</b>."],
+ ["The new law will ___ into force next year.",["come","go","get","bring"],"<b>come into force</b> — вступить в силу."],
+ ["He ___ the competition and won gold.",["entered","visited","came","attended"],"Принять участие в конкурсе — <b>enter a competition</b>."],
+ ["Around 200 people ___ the lecture.",["attended","visited","assisted","entered"],"Посетить лекцию — <b>attend</b>. assist — помогать."],
+ ["We ___ our grandparents every summer.",["visit","attend","assist","frequent"],"Навещать людей — <b>visit</b>."],
+ ["The doctor ___ him to stay in bed.",["advised","suggested","insisted","proposed"],"<b>advise sb to do</b>. suggest sb to do — ошибка."],
+ ["She ___ the vase on the floor.",["dropped","fell","fallen","felled"],"Уронить что-то — <b>drop</b>. fall — падать самому."],
+ ["The price of oil has ___ sharply.",["fallen","fell","felled","failed"],"Третья форма fall — <b>fallen</b>."],
+ ["Scientists have ___ a new species of frog.",["discovered","invented","founded","created"],"Открыть существующее — <b>discover</b>."],
+ ["Who ___ the telephone?",["invented","discovered","found","explored"],"Изобрести — <b>invent</b>."],
+ ["Moscow was ___ in 1147.",["founded","found","funded","finded"],"Основать — <b>found</b>, founded. found — прошедшее от find."]])},
+{id:"x2",group:"Хард",title:"Синонимы-ловушки: существительные",
+ hint:"<b>bill</b> — счёт в кафе, <b>receipt</b> — чек, <b>recipe</b> — рецепт блюда, <b>prescription</b> — рецепт врача. <b>queue</b> — очередь. <b>stage</b> — сцена в театре, <b>scene</b> — эпизод. <b>ending</b> — концовка.",
+ Q:QQ([
+ ["There was a long ___ outside the museum.",["queue","row","rank","order"],"Очередь — <b>queue</b>."],
+ ["The ___ for the concert were sold out.",["tickets","receipts","checks","bills"],"Билеты — <b>tickets</b>."],
+ ["Can I have the ___, please? We’d like to pay.",["bill","receipt","note","ticket"],"Счёт в кафе — <b>the bill</b>."],
+ ["Keep the ___ in case you want to return the shoes.",["receipt","bill","ticket","recipe"],"Чек о покупке — <b>receipt</b>."],
+ ["This cake ___ is from my grandmother.",["recipe","receipt","prescription","formula"],"Рецепт блюда — <b>recipe</b>."],
+ ["The doctor wrote me a ___ for some medicine.",["prescription","recipe","receipt","description"],"Рецепт врача — <b>prescription</b>."],
+ ["Football is my favourite ___.",["sport","play","match","race"],"Вид спорта — <b>sport</b>."],
+ ["We watched an exciting ___ between Spain and Italy.",["match","play","sport","race"],"Матч — <b>match</b>."],
+ ["The actors bowed on the ___ after the play.",["stage","scene","screen","show"],"Театральная сцена — <b>stage</b>. scene — эпизод."],
+ ["The film has a happy ___.",["ending","end","finish","final"],"Концовка — <b>ending</b>."]])},
+{id:"x3",group:"Хард",title:"Тонкие коллокации",
+ hint:"<b>heavy</b> rain, traffic. <b>strong</b> wind, coffee. <b>serious</b> mistake, talk. <b>poor</b> memory. <b>tall</b> человек, <b>high</b> гора. <b>pure</b> coincidence. <b>pass</b> an exam with flying colours.",
+ Q:QQ([
+ ["She ___ the exam with flying colours.",["passed","did","sat","gave"],"Блестяще сдать — <b>pass with flying colours</b>."],
+ ["There was heavy ___ on the roads this morning.",["traffic","transport","movement","cars"],"<b>heavy traffic</b> — пробки."],
+ ["We had a ___ talk about our plans.",["serious","heavy","hard","strong"],"<b>a serious talk</b>."],
+ ["My brother is very ___; he’s almost two metres.",["tall","high","long","big"],"Рост человека — <b>tall</b>."],
+ ["He made a ___ mistake.",["serious","heavy","strong","hard"],"<b>a serious mistake</b>."],
+ ["I prefer ___ coffee without milk.",["strong","powerful","heavy","hard"],"Крепкий кофе — <b>strong coffee</b>."],
+ ["There was a ___ wind all night.",["strong","heavy","hard","thick"],"Сильный ветер — <b>strong wind</b>."],
+ ["___ rain is expected tomorrow.",["Heavy","Strong","Hard","Thick"],"Сильный дождь — <b>heavy rain</b>."],
+ ["She has a ___ memory; she forgets everything.",["poor","thin","light","low"],"Плохая память — <b>a poor memory</b>."],
+ ["It was a ___ coincidence that we met there.",["pure","clean","clear","blank"],"Чистая случайность — <b>pure coincidence</b>."]])},
+{id:"x4",group:"Хард",title:"Наречия и связки высокого уровня",
+ hint:"<b>hardly ever</b> — почти никогда. <b>respectively</b> — соответственно. <b>eventually</b> — в конце концов. <b>actually</b> — на самом деле. <b>by far</b> — безусловно (с превосходной). <b>so</b> + прил., <b>such a</b> + прил. + сущ. <b>so am I</b> — я тоже.",
+ Q:QQ([
+ ["She hardly ___ goes out these days.",["ever","never","sometimes","always"],"<b>hardly ever</b> — почти никогда."],
+ ["I’ve ___ finished my essay — just one paragraph left.",["almost","hardly","barely","scarcely"],"Почти — <b>almost</b>. hardly, barely, scarcely — «едва, почти не»."],
+ ["Tom and Ann got 80 and 95 points ___.",["respectively","respectfully","respectably","respective"],"Соответственно — <b>respectively</b>."],
+ ["After a long search, they ___ found the keys.",["eventually","lately","currently","presently"],"В конце концов — <b>eventually</b>."],
+ ["I thought the film would be boring, but ___ it was great.",["actually","currently","presently","eventually"],"На самом деле — <b>actually</b>."],
+ ["___ speaking, the plan is good, but it needs details.",["Generally","Generous","General","Generality"],"<b>Generally speaking</b> — в целом."],
+ ["He is ___ the best player in the team.",["by far","very","too","more"],"Безусловно лучший — <b>by far the best</b>."],
+ ["The film was ___ boring that we left.",["so","such","too","very"],"so + прилагательное + that."],
+ ["It was ___ a boring film that we left.",["such","so","too","very"],"such a + прилагательное + существительное."],
+ ["She’s tired, and ___ am I.",["so","neither","too","also"],"Я тоже (утверждение) — <b>so am I</b>."]])}
+);
+
+// Порядок и номера уроков, как в сборнике: 6, 6.1, 6.2 …
+(function(){
+ var ORDER=[["u1","1"],["u2","2"],["u3","3"],["u4","4"],["u5","5"],["u6","6"],["u16","6.1"],["n1","6.2"],["n2","6.3"],
+  ["u7","7"],["u17","7.1"],["n3","7.2"],
+  ["u8","8"],["u9","8.1"],["u18","8.2"],["n4","8.3"],["n5","8.4"],
+  ["u10","9"],["u19","9.1"],["n6","9.2"],["n7","9.3"],
+  ["u11","10"],["u20","10.1"],["n8","10.2"],
+  ["u12","11"],["n9","11.1"],["n10","11.2"],
+  ["u13","12"],["n11","12.1"],["u14","13"],["u15","14"],["u21","14.1"],
+  ["x1","Х1"],["x2","Х2"],["x3","Х3"],["x4","Х4"]];
+ var byId={};UNITS.forEach(function(u){byId[u.id]=u;});
+ var out=[];ORDER.forEach(function(p){var u=byId[p[0]];if(u){u.num=p[1];out.push(u);delete byId[p[0]];}});
+ Object.keys(byId).forEach(function(k){out.push(byId[k]);});
+ UNITS.length=0;Array.prototype.push.apply(UNITS,out);
+ UNITS.forEach(function(u){if(u.group==="Существительные и прилагательные"&&u.id==="u14")u.group="Наречия и прилагательные";});
+})();
+
+// ===== Хард-тексты 30–36 =====
+function GG(list){return list.map(function(x){return {o:x[0],a:0,e:x[1]};});}
+EXAMS.push(
+{id:"xh1", title:"Хард · The old lighthouse",
+ text:"For forty years, Thomas had {30} the lighthouse on the rocky coast. Every evening he climbed the narrow stairs and {31} the lamp, so that passing ships could see the rocks. The job was lonely, but he had never {32} it for a moment. One stormy night, the power suddenly {33}. Thomas knew that without the light, the fishing boats would be in serious {34}. He took out an old oil lamp that he had always {35} in the cupboard for emergencies, and kept it burning until dawn. In the morning, the fishermen came to thank him, and he realised that his work {36} more than he had ever imagined.",
+ gaps:GG([
+ [["kept","held","saved","stored"],"<b>keep a lighthouse</b> — быть смотрителем маяка (lighthouse keeper)."],
+ [["lit","fired","burnt","flamed"],"Зажечь лампу — <b>light</b>, в прошедшем lit."],
+ [["regretted","repented","sorrowed","complained"],"Пожалеть о чём-то — <b>regret sth</b>. complain требует about."],
+ [["failed","missed","lost","lacked"],"Электричество отключилось — <b>the power failed</b>."],
+ [["danger","risk","threat","hazard"],"<b>in danger</b>. Риск — at risk, не in risk."],
+ [["kept","held","stood","remained"],"Хранить где-то — <b>keep sth in</b>."],
+ [["mattered","cared","minded","concerned"],"Иметь значение — <b>matter</b>."]])},
+{id:"xh2", title:"Хард · A difficult choice",
+ text:"Anna had always dreamed of becoming a doctor, but when she {30} her final exams, she was offered two places: one at a medical university in Moscow and one at an art school in Paris. Her parents {31} her to choose medicine, as it was a more reliable career. However, painting had always been her greatest {32}. She spent weeks {33} up the pros and cons. In the end, she decided to {34} her heart. Her parents were disappointed at first, but they soon {35} her decision. Today Anna’s paintings are {36} in galleries all over Europe.",
+ gaps:GG([
+ [["passed","succeeded","managed","achieved"],"Сдать экзамен — <b>pass</b>. succeed требует in."],
+ [["urged","insisted","demanded","suggested"],"Настойчиво убеждать — <b>urge sb to do</b>. insist on, suggest sb to — ошибки."],
+ [["passion","affection","fondness","attraction"],"Главная страсть — <b>passion</b>. affection и fondness требуют for."],
+ [["weighing","measuring","counting","balancing"],"<b>weigh up the pros and cons</b> — взвешивать за и против."],
+ [["follow","obey","chase","pursue"],"<b>follow your heart</b> — следовать зову сердца."],
+ [["accepted","admitted","agreed","approved"],"Принять решение другого — <b>accept</b>. approve и agree требуют of / with."],
+ [["exhibited","exposed","revealed","uncovered"],"Выставлять в галерее — <b>exhibit</b>. expose — подвергать, разоблачать."]])},
+{id:"xh3", title:"Хард · The village library",
+ text:"When the local library {30} closure because of a lack of money, the villagers decided to save it. They {31} a meeting in the school hall to discuss what could be done. Someone suggested organising a book fair to {32} money. Within a month, more than two hundred people had {33} part in the project. Local businesses {34} furniture and computers, and volunteers painted the walls. The library not only survived but also became the {35} of village life. Now it is open seven days a week and is {36} popular with teenagers.",
+ gaps:GG([
+ [["faced","met","encountered","confronted"],"<b>face closure</b> — оказаться под угрозой закрытия."],
+ [["held","kept","made","did"],"<b>hold a meeting</b>."],
+ [["raise","rise","arise","lift"],"Собрать деньги — <b>raise money</b>."],
+ [["taken","had","made","given"],"<b>take part in</b>."],
+ [["donated","awarded","granted","rewarded"],"Пожертвовать — <b>donate</b>. award — наградить."],
+ [["heart","body","head","back"],"Центр жизни — <b>the heart of</b>."],
+ [["particularly","peculiarly","partially","partly"],"Особенно — <b>particularly</b>. peculiarly — странно, partly — частично."]])},
+{id:"xh4", title:"Хард · The marathon",
+ text:"Last spring Ivan decided to run his first marathon. He had never been {30} sporty, so his friends didn’t take him seriously. He {31} up a strict training plan and ran every morning before work. After a few weeks, his body began to {32} to the heavy load. On the day of the race, the weather was {33} hot, and many runners had to stop. Ivan felt {34}, but he kept going, step by step. When he finally {35} the finish line, he burst into tears of joy. Since then, he has {36} part in five more races.",
+ gaps:GG([
+ [["especially","specially","specifically","specialist"],"Особенно — <b>especially</b>. specially — специально."],
+ [["drew","brought","took","held"],"Составить план — <b>draw up a plan</b>."],
+ [["adapt","adopt","admit","accept"],"Приспособиться — <b>adapt to</b>."],
+ [["extremely","highly","greatly","deeply"],"Очень жарко — <b>extremely hot</b>. highly с hot не сочетается."],
+ [["exhausted","exhausting","tiring","exhaustive"],"О чувствах человека — <b>-ed</b>: exhausted."],
+ [["crossed","walked","stepped","moved"],"Пересечь финишную черту — <b>cross the finish line</b>."],
+ [["taken","had","made","done"],"<b>take part in</b>."]])}
+);
+
+</script>
+<script>
+(function(){
+'use strict';
+var KEY='trainer3036_v1';document.title=CONFIG.name;
+var S=load();
+function load(){var d={xp:0,streak:0,lastDay:'',units:{},exams:{},bank:{},answered:0,correct:0};
+  try{var r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)for(var k in d)if(r[k]!==undefined)d[k]=r[k];}catch(e){}
+  return d;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function today(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function yesterday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function liveStreak(){return (S.lastDay===today()||S.lastDay===yesterday())?S.streak:0;}
+function touchDay(){var t=today();if(S.lastDay===t)return;S.streak=(S.lastDay===yesterday())?S.streak+1:1;S.lastDay=t;}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function plural(n,a,b,c){var m=n%10,h=n%100;return (m===1&&h!==11)?a:(m>=2&&m<=4&&(h<12||h>14))?b:c;}
+function $(s){return document.querySelector(s);}
+var app=$('#app'),nav=$('#nav'),tab='map',timerId=null;
+var ICON={
+ fire:'<svg class="ico" viewBox="0 0 24 24" fill="#D9685B"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg>',
+ star:'<svg class="ico" viewBox="0 0 24 24" fill="#5A3A28"><path d="M12 2l3 7 7 .6-5.3 4.7L18.3 22 12 18l-6.3 4 1.6-7.7L2 9.6 9 9z"/></svg>',
+ play:'<svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" style="margin-left:auto"><path d="M7 4l13 8-13 8z"/></svg>'
+};
+
+nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;render();});
+function showNav(on){document.body.classList.toggle('lesson',!on);nav.style.display=on?'':'none';app.style.paddingBottom=on?'96px':'24px';
+  [].forEach.call(nav.querySelectorAll('button'),function(b){b.classList.toggle('on',b.dataset.tab===tab);});}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
+function render(){stopTimer();window.scrollTo(0,0);showNav(true);
+  if(tab==='map')renderMap();else if(tab==='exams')renderExams();else if(tab==='bank')renderBank();else renderProfile();}
+
+function unitStat(u){return S.units[u.id]||{best:0,runs:0};}
+function stars(best,total){var p=best/total;return p>=1?3:p>=0.8?2:p>=0.5?1:0;}
+function starStr(n){return '★★★'.slice(0,n)+'<span style="color:var(--line)">'+'★★★'.slice(0,3-n)+'</span>';}
+function nextUnit(){for(var i=0;i<UNITS.length;i++){var st=unitStat(UNITS[i]);if(stars(st.best,UNITS[i].Q.length)<2)return i;}return 0;}
+function bankCount(){return Object.keys(S.bank).length;}
+
+function renderMap(){
+  var ni=nextUnit(),nu=UNITS[ni],h='';
+  h+='<div class="stack"><div><h1>'+esc(CONFIG.name)+'</h1><div class="muted small">'+esc(CONFIG.subtitle)+(CONFIG.author?'<br>'+esc(CONFIG.author):'')+'</div></div>';
+  h+='<div class="stats"><span>'+ICON.fire+liveStreak()+' '+plural(liveStreak(),'день','дня','дней')+'</span><span>'+ICON.star+S.xp+' XP</span></div>';
+  h+='<button class="hero" data-unit="'+ni+'"><span><span class="t1">'+(unitStat(nu).runs?'Продолжить':'Начать')+' · Юнит '+(nu.num||ni+1)+'</span><br><span class="t2">'+esc(nu.title)+'</span></span>'+ICON.play+'</button>';
+  h+='<button class="tile" data-go="exams"><span class="badge">30</span><span><span class="ttl">Тексты как на экзамене</span><br><span class="muted small">'+EXAMS.length+' '+plural(EXAMS.length,'текст','текста','текстов')+', есть текст ФИПИ 2026</span></span><span class="chev">›</span></button>';
+  var bc=bankCount();
+  h+='<button class="tile" data-go="bank"><span class="badge" style="background:var(--blue-l);color:var(--blue-d)">!</span><span><span class="ttl">Копилка ошибок</span><br><span class="muted small">'+(bc?bc+' '+plural(bc,'ловушка','ловушки','ловушек')+' на повторение':'пока пусто')+'</span></span><span class="chev">›</span></button></div>';
+  var g='';
+  UNITS.forEach(function(u,i){
+    if(u.group!==g){g=u.group;h+='<div class="grp">'+esc(g)+'</div>'+(g==='Хард'?'<div class="muted small" style="margin:-2px 4px 10px">Сложнее ЕГЭ: синонимы-ловушки и тонкие сочетания, как в продвинутых сборниках. Для тех, кто прошёл основной курс.</div>':'');}
+    var st=unitStat(u),n=u.Q.length,s=stars(st.best,n);
+    h+='<button class="tile" style="margin-bottom:10px" data-unit="'+i+'"><span class="badge'+(s>=2?' done':'')+'"'+(String(u.num||'').length>2?' style="font-size:14px"':'')+'>'+(u.num||i+1)+'</span><span style="flex:1;min-width:0"><span style="font-weight:600">'+esc(u.title)+'</span>'+
+      '<div class="row" style="margin-top:6px"><div class="bar" style="flex:1"><i style="width:'+Math.round(st.best/n*100)+'%"></i></div><span class="stars">'+starStr(s)+'</span></div></span></button>';
+  });
+  app.innerHTML=h;
+  app.querySelectorAll('[data-unit]').forEach(function(b){b.onclick=function(){startUnit(+b.dataset.unit);};});
+  app.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){tab=b.dataset.go;render();};});
+}
+
+/* ---------- урок ---------- */
+var L=null;
+function mkItem(q,key,unitTitle){return {q:q,key:key,unit:unitTitle,order:shuffle([0,1,2,3])};}
+function startUnit(i){var u=UNITS[i];
+  L={kind:'unit',idx:i,title:u.title,hint:u.hint,items:shuffle(u.Q.map(function(q,j){return mkItem(q,u.id+':'+j,u.title);})),pos:0,right:0,xp:0,run:0};
+  renderQ();}
+function startBank(){var keys=shuffle(Object.keys(S.bank)).slice(0,10);
+  L={kind:'bank',title:'Копилка ошибок',items:keys.map(function(k){var p=k.split(':');var u=UNITS.find(function(x){return x.id===p[0];});
+     if(u)return mkItem(u.Q[+p[1]],k,u.title);var e=EXAMS.find(function(x){return x.id===p[0];});var gp=e.gaps[+p[1]];
+     return mkItem({s:sentenceFor(e,+p[1]),o:gp.o,a:gp.a,e:gp.e},k,e.title);}).filter(Boolean),pos:0,right:0,xp:0,run:0};
+  renderQ();}
+function sentenceFor(e,gi){var num=30+gi;var parts=e.text.split(/(?<=[.!?'’])\s+/);var s=parts.find(function(p){return p.indexOf('{'+num+'}')>=0;})||e.text;
+  return s.replace('{'+num+'}','___').replace(/\{(\d\d)\}/g,'…').replace(/…\./g,'…');}
+function qHtml(s,fill){return esc(s).replace('___','<span class="gap">'+(fill?esc(fill):'&nbsp;')+'</span>');}
+function renderQ(picked){
+  showNav(false);var it=L.items[L.pos],q=it.q,n=L.items.length,answered=picked!==undefined;
+  var h='<div class="top"><button class="x" id="quit" aria-label="Выйти">×</button><div class="bar" style="flex:1"><i style="width:'+(L.pos/n*100)+'%"></i></div><span class="muted small">'+(L.pos+1)+'/'+n+'</span></div>';
+  h+='<div class="muted small">'+esc(it.unit)+'</div>';
+  h+='<div class="q">'+qHtml(q.s,answered?q.o[q.a]:'')+'</div><div class="opts">';
+  it.order.forEach(function(oi){var c='opt';if(answered){if(oi===q.a)c+=' right';else if(oi===picked)c+=' wrong';}
+    h+='<button class="'+c+'" data-o="'+oi+'"'+(answered?' disabled':'')+'>'+esc(q.o[oi])+'</button>';});
+  h+='</div>';
+  if(!answered&&L.hint)h+='<button class="link muted small" id="hintb" style="margin-top:14px;text-decoration:underline">Подсказка</button><div id="hintbox"></div>';
+  if(answered){var ok=picked===q.a;
+    h+='<div class="fb '+(ok?'ok':'bad')+'"><b class="h">'+(ok?pick(['Верно!','Точно!','Отлично!','Так держать!']):'Верный ответ: '+esc(q.o[q.a]))+'</b>'+q.e+'</div>';
+    h+='<div class="spacer"></div><div class="footer"><button class="btn '+(ok?'ok':'bad')+'" id="next">'+(L.pos+1<n?'Дальше':'Готово')+'</button></div>';}
+  app.innerHTML=h;
+  $('#quit').onclick=function(){if(L.pos===0||confirmQuit())render();};
+  if(!answered){app.querySelectorAll('[data-o]').forEach(function(b){b.onclick=function(){answer(+b.dataset.o);};});
+    var hb=$('#hintb');if(hb)hb.onclick=function(){$('#hintbox').innerHTML='<div class="hint">'+L.hint+'</div>';hb.remove();};}
+  else $('#next').onclick=function(){L.pos++;if(L.pos<n)renderQ();else finish();};
+}
+function confirmQuit(){return true;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function answer(o){var it=L.items[L.pos],ok=o===it.q.a;
+  S.answered++;touchDay();
+  if(ok){S.correct++;L.right++;L.run++;var g=10+(L.run>=3?5:0);L.xp+=g;S.xp+=g;if(L.kind==='bank')delete S.bank[it.key];}
+  else{L.run=0;S.bank[it.key]=1;}
+  save();renderQ(o);}
+function finish(){var n=L.items.length,h='';
+  if(L.kind==='unit'){var u=UNITS[L.idx],st=S.units[u.id]||{best:0,runs:0};st.runs++;if(L.right>st.best)st.best=L.right;S.units[u.id]=st;save();}
+  var s=stars(L.right,n);
+  h+='<div class="spacer"></div><div class="center stack"><div class="stars" style="font-size:44px">'+starStr(s)+'</div>';
+  h+='<div class="big">'+L.right+' / '+n+'</div><div class="muted">'+(s===3?'Без единой ошибки!':s===2?'Отличный результат':s===1?'Неплохо, но есть что повторить':'Повтори правило и попробуй ещё раз')+'</div>';
+  h+='<div class="card"><b>+'+L.xp+' XP</b> · серия '+liveStreak()+' '+plural(liveStreak(),'день','дня','дней')+'</div>';
+  if(L.right<n)h+='<div class="muted small">Ошибки попали в копилку, их можно повторить отдельно.</div>';
+  h+='</div><div class="spacer"></div><div class="stack footer">';
+  if(L.kind==='unit'){h+='<button class="btn" id="again">Ещё раз</button>';if(L.idx+1<UNITS.length)h+='<button class="btn ghost" id="nextu">Следующий юнит</button>';}
+  else if(bankCount())h+='<button class="btn" id="morebank">Повторить ещё</button>';
+  h+='<button class="btn ghost" id="home">На карту</button></div>';
+  app.innerHTML=h;
+  var a=$('#again');if(a)a.onclick=function(){startUnit(L.idx);};
+  var nu=$('#nextu');if(nu)nu.onclick=function(){startUnit(L.idx+1);};
+  var mb=$('#morebank');if(mb)mb.onclick=startBank;
+  $('#home').onclick=function(){tab=L.kind==='bank'?'bank':'map';render();};
+}
+
+/* ---------- копилка ---------- */
+function renderBank(){var bc=bankCount(),h='<div class="stack"><h1>Копилка ошибок</h1>';
+  if(!bc)h+='<div class="card empty">Пока пусто. Ошибёшься в уроке или тексте — ловушка попадёт сюда.</div>';
+  else{h+='<div class="muted">Здесь '+bc+' '+plural(bc,'ловушка','ловушки','ловушек')+'. Ответишь верно — ловушка уйдёт из копилки.</div><button class="btn" id="go">Повторить ('+Math.min(10,bc)+')</button>';
+    var list=Object.keys(S.bank).slice(0,40).map(function(k){var p=k.split(':');var u=UNITS.find(function(x){return x.id===p[0];});
+      if(u){var q=u.Q[+p[1]];return '<div class="card small">'+esc(q.s).replace('___','<b>'+esc(q.o[q.a])+'</b>')+'</div>';}
+      var e=EXAMS.find(function(x){return x.id===p[0];});if(!e)return '';var g=e.gaps[+p[1]];return '<div class="card small">'+esc(sentenceFor(e,+p[1])).replace('___','<b>'+esc(g.o[g.a])+'</b>')+'</div>';});
+    h+=list.join('');}
+  app.innerHTML=h+'</div>';var g=$('#go');if(g)g.onclick=startBank;}
+
+/* ---------- экзамен ---------- */
+var X=null;
+function renderExams(){var h='<div class="stack"><h1>Тексты 30–36</h1><div class="muted">Как на экзамене: текст с семью пропусками, у каждого четыре варианта. Время идёт, но не ограничено.</div>';
+  EXAMS.forEach(function(e,i){var r=S.exams[e.id];
+    h+='<button class="tile" data-ex="'+i+'"><span class="badge'+(r&&r.best===7?' done':'')+'">'+(i+1)+'</span><span><span class="ttl">'+esc(e.title)+'</span><br><span class="muted small">'+(r?'лучший результат '+r.best+'/7':'не решён')+'</span></span><span class="chev">›</span></button>';});
+  app.innerHTML=h+'</div>';
+  app.querySelectorAll('[data-ex]').forEach(function(b){b.onclick=function(){startExam(+b.dataset.ex);};});}
+function startExam(i){X={idx:i,e:EXAMS[i],ans:[null,null,null,null,null,null,null],orders:EXAMS[i].gaps.map(function(){return EXAMS[i].fipi?[0,1,2,3]:shuffle([0,1,2,3]);}),t0:Date.now(),done:false};renderExam();
+  timerId=setInterval(tick,1000);}
+function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+function tick(){var t=$('#tm');if(t&&X&&!X.done)t.textContent=fmt(Date.now()-X.t0);}
+function renderExam(){showNav(false);var e=X.e,h='';
+  h+='<div class="top"><button class="x" id="quit" aria-label="Выйти">×</button><b>'+esc(e.title)+'</b><span class="timer" id="tm">'+fmt((X.done?X.t1:Date.now())-X.t0)+'</span></div>';
+  var txt=esc(e.text).replace(/\{(\d\d)\}/g,function(m,num){var gi=+num-30,a=X.ans[gi],c='g';
+    if(X.done)c+=(a===e.gaps[gi].a?' right':' wrong');else if(a!==null)c+=' filled';
+    return '<span class="'+c+'" data-jump="'+gi+'">'+num+(a!==null?' '+esc(e.gaps[gi].o[a]):'')+'</span>';});
+  h+='<div class="card text">'+txt+'</div>'+(e.source?'<div class="muted small" style="margin-top:8px">'+esc(e.source)+'</div>':'');
+  if(X.done){var r=X.ans.filter(function(a,i){return a===e.gaps[i].a;}).length;
+    h+='<div class="card center" style="margin-top:14px"><div class="big">'+r+' / 7</div><div class="muted">время '+fmt(X.t1-X.t0)+'</div></div>';}
+  e.gaps.forEach(function(g,gi){
+    h+='<div class="gaprow" id="gap'+gi+'"><div class="n">'+(30+gi)+'</div><div class="opts">';
+    X.orders[gi].forEach(function(oi){var c='opt';
+      if(X.done){if(oi===g.a)c+=' right';else if(oi===X.ans[gi])c+=' wrong';}else if(X.ans[gi]===oi)c+=' sel';
+      h+='<button class="'+c+'" data-g="'+gi+'" data-o="'+oi+'"'+(X.done?' disabled':'')+'>'+(e.fipi?(oi+1)+') ':'')+esc(g.o[oi])+'</button>';});
+    h+='</div>';
+    if(X.done&&X.ans[gi]!==g.a)h+='<div class="fb bad small">'+g.e+'</div>';
+    h+='</div>';});
+  var filled=X.ans.filter(function(a){return a!==null;}).length;
+  h+='<div class="footer stack">'+(X.done?'<button class="btn" id="retry">Решить заново</button><button class="btn ghost" id="back">К текстам</button>':'<button class="btn" id="check"'+(filled<7?' disabled':'')+'>'+(filled<7?'Заполнено '+filled+' из 7':'Проверить')+'</button>')+'</div>';
+  var y=window.scrollY;app.innerHTML=h;window.scrollTo(0,y);
+  $('#quit').onclick=function(){tab='exams';render();};
+  app.querySelectorAll('[data-jump]').forEach(function(s){s.onclick=function(){var el=$('#gap'+s.dataset.jump);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});};});
+  if(!X.done){app.querySelectorAll('[data-g]').forEach(function(b){b.onclick=function(){X.ans[+b.dataset.g]=+b.dataset.o;renderExam();};});
+    var c=$('#check');if(c)c.onclick=checkExam;}
+  else{$('#retry').onclick=function(){stopTimer();startExam(X.idx);};$('#back').onclick=function(){tab='exams';render();};}
+}
+function checkExam(){var e=X.e;X.done=true;X.t1=Date.now();stopTimer();touchDay();
+  var r=0;e.gaps.forEach(function(g,gi){var k=e.id+':'+gi;S.answered++;if(X.ans[gi]===g.a){r++;S.correct++;delete S.bank[k];}else S.bank[k]=1;});
+  var xp=r*10+(r===7?20:0);S.xp+=xp;var st=S.exams[e.id]||{best:0,runs:0};st.runs++;if(r>st.best)st.best=r;S.exams[e.id]=st;save();
+  window.scrollTo(0,0);renderExam();}
+
+/* ---------- прогресс ---------- */
+function renderProfile(){var done=UNITS.filter(function(u){return stars(unitStat(u).best,u.Q.length)>=2;}).length;
+  var acc=S.answered?Math.round(S.correct/S.answered*100):0;
+  var h='<div class="stack"><h1>Прогресс</h1><div class="kv">'+
+   '<div class="card"><div class="muted small">Опыт</div><div class="v">'+S.xp+' XP</div></div>'+
+   '<div class="card"><div class="muted small">Серия</div><div class="v">'+liveStreak()+' '+plural(liveStreak(),'день','дня','дней')+'</div></div>'+
+   '<div class="card"><div class="muted small">Юнитов пройдено</div><div class="v">'+done+' / '+UNITS.length+'</div></div>'+
+   '<div class="card"><div class="muted small">Точность</div><div class="v">'+acc+'%</div></div></div>'+
+   '<div class="card small muted">Прогресс хранится только в этом браузере на этом устройстве. Никаких аккаунтов и паролей: данные никуда не отправляются.</div>'+
+   '<button class="btn ghost" id="reset">Сбросить прогресс</button></div>';
+  app.innerHTML=h;
+  $('#reset').onclick=function(){var b=$('#reset');if(b.dataset.c){S={xp:0,streak:0,lastDay:'',units:{},exams:{},bank:{},answered:0,correct:0};save();render();}
+    else{b.dataset.c='1';b.textContent='Точно сбросить? Нажми ещё раз';b.style.borderColor='var(--bad)';b.style.color='var(--bad)';}};}
+
+render();
+})();
+</script>
+</body>
+</html>
