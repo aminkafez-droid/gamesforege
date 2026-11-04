@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#EDE5D8">
+<title>Russian Holidays</title>
+<style>
+:root{
+  --bg:#E9EEF5; --card:#FFFFFF; --soft:#F3F6FA; --line:#D7DFEA;
+  --ink:#1F2A3C; --muted:#5B6678; --blue:#2F6FD6; --blue-d:#2357A8; --blue-l:#DCEBFA;
+  --ok:#1E8E4E; --ok-l:#E3F5EA; --bad:#D2483B; --bad-l:#FBE7E4; --amber:#E0802A; --amber-l:#FDEBD8;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.4;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+#app{max-width:460px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:16px 16px 96px}
+h1,h2,h3{margin:0;line-height:1.15}
+h1{font-size:26px;font-weight:800}
+h2{font-size:22px;font-weight:800}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.card{background:var(--card);border-radius:18px;padding:14px 16px;box-shadow:0 1px 0 var(--line)}
+.row{display:flex;align-items:center;gap:12px}
+.stack>*+*{margin-top:12px}
+.stats{display:flex;justify-content:space-between;padding:4px 6px;font-weight:700;font-variant-numeric:tabular-nums}
+.stats span{display:flex;align-items:center;gap:6px}
+.ico{width:22px;height:22px;flex-shrink:0}
+.hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--blue);color:#fff;border-radius:20px;padding:16px 18px;box-shadow:0 5px 0 var(--blue-d)}
+.hero:active,.btn:active,.tile:active,.opt:active{transform:translateY(2px)}
+.hero .t1{font-size:14px;opacity:.85}.hero .t2{font-size:21px;font-weight:800}
+.tile{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border-radius:18px;padding:14px 16px;border:2px solid var(--line)}
+.tile .ttl{font-weight:800;font-size:18px}
+.badge{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:var(--blue-l);color:var(--blue);font-weight:700;font-family:var(--disp);flex-shrink:0}
+.badge.done{background:var(--ok-l);color:var(--ok)}
+.grp{margin:22px 4px 8px;font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.bar{height:8px;border-radius:8px;background:var(--soft);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--blue);border-radius:8px;transition:width .3s}
+.chev{margin-left:auto;color:var(--muted);font-size:22px}
+.btn{display:block;width:100%;min-height:54px;border-radius:16px;font-weight:800;font-size:18px;background:var(--blue);color:#fff;box-shadow:0 4px 0 var(--blue-d)}
+.btn:disabled{background:var(--line);color:var(--muted);box-shadow:none;cursor:default}
+.btn.ghost{background:transparent;color:var(--blue);border:2px solid var(--blue);box-shadow:none}
+.btn.ok{background:var(--ok);box-shadow:0 4px 0 #146b39}
+.btn.bad{background:var(--bad);box-shadow:0 4px 0 #a5342a}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.x{font-size:26px;line-height:1;color:var(--muted);padding:6px}
+.q{font-size:21px;font-weight:600;margin:18px 0 20px}
+.q .gap{display:inline-block;min-width:70px;border-bottom:3px solid var(--blue);text-align:center;color:var(--blue);font-weight:800}
+.opts{display:grid;gap:10px}
+.opt{width:100%;min-height:54px;border-radius:14px;background:var(--card);border:2px solid var(--line);font-size:18px;font-weight:600;padding:10px 14px;text-align:left}
+.opt.sel{border-color:var(--blue);background:var(--blue-l)}
+.opt.right{border-color:var(--ok);background:var(--ok-l)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-l)}
+.fb{border-radius:16px;padding:14px 16px;margin-top:16px}
+.fb.ok{background:var(--ok-l)}.fb.bad{background:var(--bad-l)}
+.fb b.h{display:block;font-size:18px;margin-bottom:4px}
+.hint{background:var(--amber-l);border-radius:14px;padding:12px 14px;font-size:15px;margin-top:12px}
+.spacer{flex:1}
+.footer{margin-top:18px}
+.big{font-size:44px;font-weight:800;text-align:center}
+.center{text-align:center}
+.text{font-size:17px;line-height:1.7}
+.text .g{display:inline-block;padding:0 6px;border-radius:8px;background:var(--blue-l);color:var(--blue);font-weight:800;cursor:pointer}
+.text .g.filled{background:var(--blue);color:#fff}
+.text .g.right{background:var(--ok);color:#fff}.text .g.wrong{background:var(--bad);color:#fff}
+.gaprow{margin-top:14px}
+.gaprow .n{font-weight:800;margin-bottom:6px}
+.gaprow .opts{grid-template-columns:1fr 1fr}
+.gaprow .opt{min-height:46px;font-size:16px}
+.timer{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted)}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0)}
+nav .in{max-width:460px;margin:0 auto;display:flex}
+nav button{flex:1;padding:8px 0 10px;font-size:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button.on{color:var(--blue);font-weight:700}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kv .card .v{font-size:26px;font-weight:800}
+.empty{padding:30px 10px;text-align:center;color:var(--muted)}
+.stars{color:var(--amber);font-size:14px;letter-spacing:1px}
+</style>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#EDE5D8; --card:#FBF7F0; --soft:#EFE6D8; --line:#DDCFBC;
+  --ink:#3E2618; --muted:#7A5F4C; --blue:#6B3E26; --blue-d:#4A2A18; --blue-l:#EBDCC8;
+  --ok:#5B7A35; --ok-l:#E6EDD6; --bad:#A8432C; --bad-l:#F5DED5; --amber:#C99A2E; --amber-l:#F4E7C6;
+  --font:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --disp:"Comfortaa","Nunito",system-ui,sans-serif;
+}
+body{background-color:var(--bg);
+  background-image:repeating-linear-gradient(0deg,rgba(120,90,60,.045) 0 1px,transparent 1px 3px),
+                   repeating-linear-gradient(90deg,rgba(120,90,60,.04) 0 1px,transparent 1px 3px);}
+h1,h2,.ttl,.big,.hero .t2,.kv .card .v{font-family:var(--disp);font-weight:700;letter-spacing:-.01em}
+h1{font-size:30px;color:var(--blue-d)}
+#app>.stack>div:first-child h1::after{content:"";display:inline-block;width:20px;height:20px;margin-left:8px;vertical-align:4px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5l3.1 6.8 7.4.8-5.5 5 1.6 7.4L12 17.8l-6.6 3.7 1.6-7.4-5.5-5 7.4-.8z' fill='%23D9B44A' stroke='%23B8912C' stroke-width='.8'/%3E%3C/svg%3E") center/contain no-repeat}
+.hero{background:linear-gradient(135deg,#7A4A2E,#55301C);box-shadow:0 5px 0 #3A2012}
+.hero::before{content:"";position:absolute}
+.card,.tile,.opt{background:var(--card)}
+.tile{border-color:var(--line)}
+.grp{font-family:var(--disp);text-transform:none;letter-spacing:0;font-size:16px;color:var(--blue);display:flex;align-items:center;gap:8px}
+.grp::before{content:"";width:16px;height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5l3.1 6.8 7.4.8-5.5 5 1.6 7.4L12 17.8l-6.6 3.7 1.6-7.4-5.5-5 7.4-.8z' fill='%23D9B44A' stroke='%23B8912C' stroke-width='.8'/%3E%3C/svg%3E") center/contain no-repeat}
+.stars{color:var(--amber)}
+.btn{font-family:var(--disp)}
+.tg{position:fixed;top:12px;right:max(12px,calc(50% - 218px));z-index:20;display:flex;align-items:center;gap:6px;
+  padding:7px 12px 7px 9px;border-radius:999px;background:var(--blue-d);color:#FBF7F0;text-decoration:none;
+  font:700 13px var(--font);box-shadow:0 3px 0 #2A170C}
+.tg svg{width:18px;height:18px}
+.tg:active{transform:translateY(2px)}
+body.lesson .tg{display:none}
+#app>.stack>div:first-child{padding-right:96px}
+</style>
+</head>
+<body>
+<a class="tg" href="https://t.me/am_engstudy" target="_blank" rel="noopener" aria-label="Наш Telegram"><svg viewBox="0 0 24 24" fill="#FBF7F0"><path d="M21.5 4.2L2.9 11.4c-1 .4-1 1.2-.2 1.5l4.7 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.3-1.5zM8.6 13.9l9.5-6c.5-.3.9-.1.5.2l-8 7.3-.3 3.4z"/></svg>наш TG</a><div id="app"></div>
+<nav id="nav"><div class="in">
+  <button data-tab="map"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Карта</button>
+  <button data-tab="exams"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Тексты</button>
+  <button data-tab="bank"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>Ошибки</button>
+  <button data-tab="profile"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Прогресс</button>
+</div></nav>
+
+<script>
+// ===== Настройки: впишите своё название и имя =====
+var CONFIG = {
+  name: "Russian Holidays",               // название игры
+  subtitle: "Праздники и история России · тренажёр к ЕГЭ",
+  author: ""                              // например: "от Анны Ивановой" — появится на главном экране
+};
+
+// [английское название, русское, дата/год, тип: h — праздник, e — событие]
+var HOL = {
+ ny:["New Year","Новый год","1 января","h"],
+ ony:["Old New Year","Старый Новый год","14 января","h"],
+ xmas:["Orthodox Christmas","Православное Рождество","7 января","h"],
+ masl:["Maslenitsa","Масленица","","h"],
+ def:["Defender of the Fatherland Day","День защитника Отечества","23 февраля","h"],
+ wom:["International Women’s Day","Международный женский день","8 марта","h"],
+ east:["Orthodox Easter","Пасха","","h"],
+ cosm:["Cosmonautics Day","День космонавтики","12 апреля","h"],
+ lab:["Spring and Labour Day","Праздник весны и труда","1 мая","h"],
+ vic:["Victory Day","День Победы","9 мая","h"],
+ rus:["Russia Day","День России","12 июня","h"],
+ rem:["Day of Remembrance and Sorrow","День памяти и скорби","22 июня","h"],
+ uni:["National Unity Day","День народного единства","4 ноября","h"],
+ con:["Constitution Day","День Конституции","12 декабря","h"],
+ kul:["The Battle of Kulikovo","Куликовская битва","1380","e"],
+ w1812:["The Patriotic War of 1812","Отечественная война 1812 года","1812","e"],
+ bor:["The Battle of Borodino","Бородинская битва","7 сентября 1812","e"],
+ ww1:["World War I","Первая мировая война","1914–1918","e"],
+ oct:["The October Revolution","Октябрьская революция","7 ноября 1917","e"],
+ serf:["The abolition of serfdom","Отмена крепостного права","3 марта 1861","e"],
+ par:["The first Victory Parade","Первый Парад Победы","24 июня 1945","e"]
+};
+
+var NAME_UNITS = [
+ {id:"h1", group:"Праздники", title:"Зимние праздники", keys:["ny","ony","xmas","def","masl"],
+  hint:"Christmas и New Year — без артикля. <b>Old New Year</b> отмечают 14 января, по старому календарю. <b>Maslenitsa</b> — проводы зимы, дата меняется каждый год."},
+ {id:"h2", group:"Праздники", title:"Весенние праздники", keys:["wom","east","cosm","lab"],
+  hint:"<b>Cosmonautics Day</b> — в честь полёта Гагарина 12 апреля 1961. <b>Spring and Labour Day</b> ещё называют May Day."},
+ {id:"h3", group:"Праздники", title:"Лето и осень", keys:["vic","rus","rem","uni","con"],
+  hint:"<b>Victory Day</b> — 9 мая, <b>Russia Day</b> — 12 июня, <b>National Unity Day</b> — 4 ноября, <b>Constitution Day</b> — 12 декабря."},
+ {id:"h4", group:"История", title:"Битвы и войны", keys:["kul","w1812","bor","ww1"],
+  hint:"Битвы — <b>The Battle of …</b>. Война 1812 года — <b>The Patriotic War of 1812</b>. Первая мировая — <b>World War I</b> или the First World War."},
+ {id:"h5", group:"История", title:"Революция, реформы, парад", keys:["oct","serf","par"],
+  hint:"<b>abolition</b> — отмена, <b>serfdom</b> — крепостное право. Первый Парад Победы прошёл 24 июня 1945 года."}
+];
+
+// Артикли: [предложение, ответ (0 —, 1 a, 2 an, 3 the), пояснение]
+var ART_UNITS = [
+ {id:"a1", group:"Артикли", title:"Праздники, даты, годы",
+  hint:"Названия праздников — <b>без артикля</b>: Victory Day, at Easter. Месяцы и годы — без артикля: in May, in 1917. Но дата: <b>the</b> 9th of May.",
+  items:[
+  ["___ National Unity Day falls on 4 November.",0,"Название праздника — без артикля."],
+  ["___ Cosmonautics Day honours Yuri Gagarin’s flight.",0,"Название праздника — без артикля."],
+  ["Orthodox Christmas falls on ___ 7th of January.",3,"Дата в формате the 7th of January."],
+  ["Many families go to church at ___ Easter.",0,"at Easter — без артикля (как и at Christmas)."],
+  ["Napoleon’s army entered Moscow in ___ September 1812.",0,"Месяцы и годы — без артикля: in September."],
+  ["Women usually get flowers on ___ International Women’s Day.",0,"Название праздника — без артикля."],
+  ["People eat pancakes during ___ Maslenitsa.",0,"Название праздника — без артикля."],
+  ["The October Revolution took place in ___ 1917.",0,"Годы — без артикля: in 1917."]]},
+ {id:"a2", group:"Артикли", title:"Места, войны, имена",
+  hint:"Города и площади — без артикля: Moscow, Red Square. Реки — <b>the</b>: the Don. <b>the</b> Kremlin, <b>the</b> Soviet Union, <b>the</b> USSR. World War II — без артикля, но <b>the</b> Second World War. Титул + имя — без артикля.",
+  items:[
+  ["The Battle of Borodino took place west of ___ Moscow.",0,"Названия городов — без артикля."],
+  ["The Battle of Kulikovo was fought near ___ Don River.",3,"Названия рек — с the: the Don."],
+  ["Dmitry Donskoy led the Russian army in ___ Battle of Kulikovo.",3,"Конструкция the Battle of …"],
+  ["Serfdom was abolished by ___ Emperor Alexander II.",0,"Титул перед именем — без артикля: Emperor Alexander II."],
+  ["___ Second World War ended in 1945.",3,"С порядковым числительным — the Second World War."],
+  ["___ World War II ended in 1945.",0,"С римской цифрой — без артикля: World War II."],
+  ["A military parade is held on ___ Red Square every year.",0,"Red Square — без артикля."],
+  ["The parade passes the walls of ___ Kremlin.",3,"the Kremlin — всегда с the."],
+  ["After the revolution, the country became ___ Soviet Union.",3,"Название государства-союза — the Soviet Union."],
+  ["___ USSR existed until 1991.",3,"Аббревиатура названия государства-союза — the USSR."]]},
+ {id:"a3", group:"Артикли", title:"a / an и the",
+  hint:"<b>a</b> — перед согласным звуком, <b>an</b> — перед гласным звуком (an informal, an honour — h не читается). <b>the</b> — превосходная степень, порядковые числительные и of-фразы: the end of …",
+  items:[
+  ["Gagarin became ___ first man in space.",3,"Порядковое числительное — the first."],
+  ["Orthodox Easter is ___ moveable feast.",1,"Один из многих праздников, первый звук согласный — a."],
+  ["Old New Year is ___ informal holiday.",2,"Перед гласным звуком — an: an informal holiday."],
+  ["The manifesto marked ___ end of serfdom in Russia.",3,"of-фраза: the end of …"],
+  ["Constitution Day marks ___ anniversary of the 1993 referendum.",3,"of-фраза: the anniversary of …"],
+  ["Victory Day is one of ___ most important holidays in Russia.",3,"Превосходная степень — the most important."],
+  ["Russia Day is ___ day off for most people.",1,"Один из многих выходных, звук согласный — a day off."],
+  ["Maslenitsa lasts for ___ week.",1,"«Одна неделя», исчисляемое — a week."],
+  ["National Unity Day remembers ___ liberation of Moscow in 1612.",3,"of-фраза: the liberation of …"],
+  ["It is ___ honour to march in the Victory Parade.",2,"h не читается, первый звук гласный — an honour."]]}
+];
+
+// Тексты: {30}…{36} — пропуски, варианты всегда — / a / an / the
+var EXAM_TEXTS = [
+ {id:"t1", title:"Victory Day",
+  text:"{30} Victory Day is one of the most important holidays in Russia. It is celebrated on {31} 9th of May. On this day in {32} 1945, the Great Patriotic War came to an end. In the morning, {33} military parade takes place on {34} Red Square in Moscow. Millions of people join {35} Immortal Regiment march, carrying photos of their relatives. In the evening, there is {36} impressive firework display.",
+  ans:[0,3,0,1,0,3,2],
+  ex:["Название праздника — без артикля.","Дата: the 9th of May.","Годы — без артикля.","Один из парадов, звук согласный — a.","Red Square — без артикля.","Название конкретного шествия — the Immortal Regiment.","Перед гласным звуком — an impressive."]},
+ {id:"t2", title:"Maslenitsa",
+  text:"{30} Maslenitsa is {31} ancient festival that marks {32} end of winter. Each day of {33} festival week has its own name. Families cook pancakes, and there is often {34} competition to make the best ones. On {35} last day, called Forgiveness Sunday, people ask each other for forgiveness and burn a straw figure. It is {36} old tradition.",
+  ans:[0,2,3,3,1,3,2],
+  ex:["Название праздника — без артикля.","Перед гласным звуком — an ancient.","of-фраза: the end of winter.","Конкретная неделя праздника — the festival week.","Одно из соревнований, звук согласный — a.","Порядковое значение last — the last day.","Перед гласным звуком — an old tradition."]},
+ {id:"t3", title:"The Battle of Borodino",
+  text:"{30} Battle of Borodino took place on {31} 7th of September 1812, west of {32} Moscow. It was {33} bloodiest day of the Patriotic War. {34} Russian army was led by {35} Field Marshal Kutuzov. After the battle, Napoleon entered Moscow, but it was {36} empty city.",
+  ans:[3,3,0,3,3,0,2],
+  ex:["Конструкция the Battle of …","Дата: the 7th of September.","Названия городов — без артикля.","Превосходная степень — the bloodiest.","Конкретная армия — the Russian army.","Звание перед именем — без артикля.","Перед гласным звуком — an empty city."]}
+];
+
+// ===== Сборка заданий для движка (менять не нужно) =====
+var UNITS = [], EXAMS = [];
+(function(){
+ function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+ var all=Object.keys(HOL);
+ function three(k,f){var pool=sh(all.filter(function(x){return x!==k&&f(HOL[x]);}));return pool.slice(0,3);}
+ NAME_UNITS.forEach(function(u){
+  var Q=[];
+  u.keys.forEach(function(k){
+   var h=HOL[k],info=h[0]+" — "+h[1]+(h[2]?" · "+h[2]:" · дата меняется каждый год");
+   var d1=[k].concat(three(k,function(){return true;}));var o1=sh(d1);
+   Q.push({p:"Как это переводится на русский?",s:h[0],o:o1.map(function(x){return HOL[x][1];}),a:o1.indexOf(k),e:info});
+   var o2=sh([k].concat(three(k,function(){return true;})));
+   Q.push({p:"Как это называется по-английски?",s:h[1],o:o2.map(function(x){return HOL[x][0];}),a:o2.indexOf(k),e:info});
+   if(h[2]){var o3=sh([k].concat(three(k,function(x){return x[2]&&x[3]===h[3]&&x[2]!==h[2];})));
+    Q.push({p:h[3]==="h"?"Когда отмечают этот праздник?":"Когда это было?",s:h[0],o:o3.map(function(x){return HOL[x][2];}),a:o3.indexOf(k),e:info});}
+  });
+  UNITS.push({id:u.id,group:u.group,title:u.title,hint:u.hint,Q:Q});
+ });
+ var AO=["—","a","an","the"],AN=["без артикля","a","an","the"];
+ ART_UNITS.forEach(function(u){
+  UNITS.push({id:u.id,group:u.group,title:u.title,hint:u.hint,
+   Q:u.items.map(function(it){return {p:"Какой артикль нужен?",s:it[0],o:AO,a:it[1],e:"Правильно: <b>"+AN[it[1]]+"</b>. "+it[2]};})});
+ });
+ EXAM_TEXTS.forEach(function(t){
+  EXAMS.push({id:t.id,title:t.title,text:t.text,gaps:t.ans.map(function(a,i){return {o:AO,a:a,e:"Правильно: <b>"+AN[a]+"</b>. "+t.ex[i]};})});
+ });
+})();
+
+// ===== Тема России: [вопрос, подсказка-стем, [верный, неверный, неверный, неверный], пояснение] =====
+var RUSSIA_UNITS = [
+ {id:"r1", group:"Тема России", title:"Писатели: Пушкин, Лермонтов, Тургенев, Толстой",
+  hint:"<b>Pushkin</b> — Eugene Onegin, Boris Godunov, The Captain’s Daughter. <b>Lermontov</b> — A Hero of Our Time, The Demon. <b>Turgenev</b> — Fathers and Sons. <b>Tolstoy</b> — War and Peace, Anna Karenina, Resurrection.",
+  q:[
+  ["Кто автор?","Eugene Onegin",["Alexander Pushkin","Mikhail Lermontov","Ivan Turgenev","Leo Tolstoy"],"Eugene Onegin — «Евгений Онегин», Пушкин."],
+  ["Кто автор?","Boris Godunov",["Alexander Pushkin","Leo Tolstoy","Anton Chekhov","Ivan Turgenev"],"Boris Godunov — «Борис Годунов», Пушкин."],
+  ["Кто автор?","The Captain’s Daughter",["Alexander Pushkin","Mikhail Lermontov","Fyodor Dostoevsky","Mikhail Bulgakov"],"The Captain’s Daughter — «Капитанская дочка», Пушкин."],
+  ["Кто автор?","A Hero of Our Time",["Mikhail Lermontov","Alexander Pushkin","Ivan Turgenev","Anton Chekhov"],"A Hero of Our Time — «Герой нашего времени», Лермонтов."],
+  ["Кто автор?","The Demon",["Mikhail Lermontov","Alexander Pushkin","Leo Tolstoy","Fyodor Dostoevsky"],"The Demon — «Демон», Лермонтов."],
+  ["Кто автор?","Fathers and Sons",["Ivan Turgenev","Leo Tolstoy","Mikhail Lermontov","Anton Chekhov"],"Fathers and Sons — «Отцы и дети», Тургенев."],
+  ["Кто автор?","A Month in the Country",["Ivan Turgenev","Anton Chekhov","Alexander Pushkin","Mikhail Bulgakov"],"A Month in the Country — пьеса «Месяц в деревне», Тургенев."],
+  ["Кто автор?","War and Peace",["Leo Tolstoy","Fyodor Dostoevsky","Ivan Turgenev","Alexander Pushkin"],"War and Peace — «Война и мир», Толстой."],
+  ["Кто автор?","Anna Karenina",["Leo Tolstoy","Fyodor Dostoevsky","Anton Chekhov","Mikhail Bulgakov"],"Anna Karenina — «Анна Каренина», Толстой."],
+  ["Кто автор?","Resurrection",["Leo Tolstoy","Ivan Turgenev","Mikhail Lermontov","Fyodor Dostoevsky"],"Resurrection — «Воскресение», Толстой."],
+  ["Какой писатель погиб на дуэли в 37 лет?","died in a duel at 37",["Alexander Pushkin","Mikhail Lermontov","Ivan Turgenev","Leo Tolstoy"],"Пушкин (1799–1837) погиб на дуэли. Его считают основателем современной русской литературы."],
+  ["Какой писатель погиб на дуэли в 26 лет?","died in a duel at 26",["Mikhail Lermontov","Alexander Pushkin","Anton Chekhov","Mikhail Bulgakov"],"Лермонтов (1814–1841) тоже погиб на дуэли, как и Пушкин."],
+  ["Кто создал героя-нигилиста Базарова?","Bazarov, a nihilist",["Ivan Turgenev","Leo Tolstoy","Fyodor Dostoevsky","Alexander Pushkin"],"Базаров — герой «Отцов и детей» Тургенева, тема конфликта поколений."],
+  ["Кто в конце жизни отказался от дворянского титула и богатства?","gave up his title and wealth",["Leo Tolstoy","Ivan Turgenev","Alexander Pushkin","Anton Chekhov"],"Толстой в конце жизни жил как простой крестьянин."]]},
+ {id:"r2", group:"Тема России", title:"Писатели: Достоевский, Чехов, Булгаков",
+  hint:"<b>Dostoevsky</b> — Crime and Punishment, The Brothers Karamazov, The Idiot. <b>Chekhov</b> — The Cherry Orchard, The Seagull, The Lady with the Dog. <b>Bulgakov</b> — The Master and Margarita, Heart of a Dog.",
+  q:[
+  ["Кто автор?","Crime and Punishment",["Fyodor Dostoevsky","Leo Tolstoy","Anton Chekhov","Ivan Turgenev"],"Crime and Punishment — «Преступление и наказание», Достоевский."],
+  ["Кто автор?","The Brothers Karamazov",["Fyodor Dostoevsky","Leo Tolstoy","Mikhail Bulgakov","Alexander Pushkin"],"The Brothers Karamazov — «Братья Карамазовы», Достоевский."],
+  ["Кто автор?","The Idiot",["Fyodor Dostoevsky","Anton Chekhov","Mikhail Lermontov","Ivan Turgenev"],"The Idiot — «Идиот», Достоевский."],
+  ["Кто автор?","The Cherry Orchard",["Anton Chekhov","Ivan Turgenev","Mikhail Bulgakov","Leo Tolstoy"],"The Cherry Orchard — пьеса «Вишнёвый сад», Чехов."],
+  ["Кто автор?","The Seagull",["Anton Chekhov","Alexander Pushkin","Fyodor Dostoevsky","Mikhail Lermontov"],"The Seagull — пьеса «Чайка», Чехов."],
+  ["Кто автор?","The Lady with the Dog",["Anton Chekhov","Mikhail Bulgakov","Ivan Turgenev","Leo Tolstoy"],"The Lady with the Dog — «Дама с собачкой», Чехов."],
+  ["Кто автор?","The Master and Margarita",["Mikhail Bulgakov","Fyodor Dostoevsky","Anton Chekhov","Leo Tolstoy"],"The Master and Margarita — «Мастер и Маргарита», Булгаков."],
+  ["Кто автор?","Heart of a Dog",["Mikhail Bulgakov","Anton Chekhov","Ivan Turgenev","Alexander Pushkin"],"Heart of a Dog (Dog’s Heart) — «Собачье сердце», Булгаков."],
+  ["Какого писателя приговорили к казни, но помиловали в последний момент?","sentenced to death, pardoned",["Fyodor Dostoevsky","Alexander Pushkin","Mikhail Bulgakov","Ivan Turgenev"],"Достоевского приговорили за участие в политическом кружке. Тема страха и раскаяния потом прошла через его книги."],
+  ["Какой писатель был врачом?","a doctor and a writer",["Anton Chekhov","Leo Tolstoy","Mikhail Lermontov","Fyodor Dostoevsky"],"Чехов был врачом и писал в свободное время. Его называют мастером подтекста."],
+  ["Чей роман был запрещён при жизни и вышел через 26 лет после смерти автора?","published 26 years after the author’s death",["Mikhail Bulgakov","Fyodor Dostoevsky","Anton Chekhov","Alexander Pushkin"],"«Мастер и Маргарита» Булгакова (умер в 1940-м) вышел только в 1966 году."]]},
+ {id:"r3", group:"Тема России", title:"Учёные и открытия",
+  hint:"<b>Mendeleev</b> — the periodic table. <b>Lomonosov</b> — Moscow State University. <b>Pavlov</b> — conditioned reflexes. <b>Popov</b> — radio. <b>Korolev</b> — space programme. <b>Lobachevsky</b> — non-Euclidean geometry.",
+  q:[
+  ["Кто создал?","the periodic table of chemical elements",["Dmitri Mendeleev","Mikhail Lomonosov","Ivan Pavlov","Andrei Sakharov"],"Менделеев создал периодическую таблицу и предсказал свойства ещё не открытых элементов."],
+  ["Кто стал одним из основателей?","Moscow State University",["Mikhail Lomonosov","Dmitri Mendeleev","Vasily Tatishchev","Nikolai Lobachevsky"],"Ломоносов — один из основателей МГУ. Он же сформулировал закон сохранения массы (вещества)."],
+  ["Кто изучал условные рефлексы на опытах с собаками?","conditioned reflexes",["Ivan Pavlov","Ilya Mechnikov","Nikolay Pirogov","Vladimir Vernadsky"],"Павлов — основатель современной физиологии, лауреат Нобелевской премии по медицине."],
+  ["Кто один из изобретателей радио?","radio",["Alexander Popov","Sergei Korolev","Andrei Sakharov","Dmitri Mendeleev"],"Попов изобрёл грозоотметчик (lightning detector) и стал одним из изобретателей радио."],
+  ["Кого называют отцом советской космической программы?","the Soviet space programme",["Sergei Korolev","Yuri Gagarin","Alexander Popov","Andrei Sakharov"],"Королёв создал первую космическую ракету и первый спутник, руководил первым полётом человека в космос."],
+  ["Кто создал неевклидову геометрию?","non-Euclidean geometry",["Nikolai Lobachevsky","Mikhail Lomonosov","Dmitri Mendeleev","Vladimir Vernadsky"],"Лобачевского называют «Коперником геометрии»."],
+  ["Кто первым применил эфирный наркоз в полевых условиях?","ether anaesthesia in field conditions",["Nikolay Pirogov","Ivan Pavlov","Ilya Mechnikov","Alexander Popov"],"Пирогов — основоположник военно-полевой хирургии."],
+  ["Кто исследовал иммунную систему и получил Нобелевскую премию?","the immune system",["Ilya Mechnikov","Ivan Pavlov","Nikolay Pirogov","Vladimir Vernadsky"],"Мечников — первопроходец в изучении иммунитета и пробиотиков."],
+  ["Кто сделал популярным термин «биосфера» и создал учение о ноосфере?","the biosphere and the noosphere",["Vladimir Vernadsky","Mikhail Lomonosov","Nikolai Lobachevsky","Dmitri Mendeleev"],"Вернадский — основатель геохимии и биогеохимии."],
+  ["Кто участвовал в создании ядерного оружия, а позже получил Нобелевскую премию мира?","nuclear weapons, Nobel Peace Prize",["Andrei Sakharov","Sergei Korolev","Ivan Pavlov","Ilya Mechnikov"],"Сахаров — один из создателей советской водородной бомбы, позже правозащитник."],
+  ["Кто составил первый энциклопедический словарь русского языка?","the first encyclopedic dictionary",["Vasily Tatishchev","Mikhail Lomonosov","Vladimir Vernadsky","Nikolai Lobachevsky"],"Татищев — историк, географ и этнограф."]]},
+ {id:"r4", group:"Тема России", title:"Наука: слова",
+  hint:"Эти слова часто встречаются в текстах ЕГЭ о российских учёных.",
+  q:[
+  ["Как это переводится на русский?","the periodic table",["периодическая таблица","закон сохранения","условный рефлекс","ядерное оружие"],"the periodic table of chemical elements — периодическая таблица химических элементов."],
+  ["Как это переводится на русский?","conditioned reflexes",["условные рефлексы","иммунная система","эфирный наркоз","полевые условия"],"conditioned reflexes — условные рефлексы (Павлов)."],
+  ["Как это переводится на русский?","the law of conservation of mass",["закон сохранения массы","периодический закон","закон всемирного тяготения","неевклидова геометрия"],"conservation — сохранение (Ломоносов)."],
+  ["Как это переводится на русский?","a satellite",["спутник","ракета","телескоп","приёмник"],"the first satellite — первый искусственный спутник Земли (1957)."],
+  ["Как это переводится на русский?","a ballistic missile",["баллистическая ракета","космический корабль","спутник","грозоотметчик"],"Королёв создал первую межконтинентальную баллистическую ракету."],
+  ["Как это переводится на русский?","nuclear weapons",["ядерное оружие","атомная станция","ядерная физика","космическая программа"],"nuclear weapons — ядерное оружие."],
+  ["Как это переводится на русский?","the immune system",["иммунная система","нервная система","условный рефлекс","эфирный наркоз"],"immune system — иммунная система (Мечников)."],
+  ["Как это переводится на русский?","a founder",["основатель","изобретатель","противник","руководитель"],"a founder of Moscow State University — один из основателей МГУ."],
+  ["Как это называется по-английски?","изобрести",["invent","discover","found","research"],"invent — изобрести (то, чего не было). discover — открыть (то, что существовало)."],
+  ["Как это называется по-английски?","полёт человека в космос",["human spaceflight","space programme","rocket engine","night flight"],"Королёв руководил первым полётом человека в космос."]]},
+ {id:"r5", group:"Тема России", title:"Известные люди",
+  hint:"Спортсмены, исторические личности и композиторы — частые герои текстов ЕГЭ о России.",
+  q:[
+  ["Чем известна?","Maria Sharapova",["tennis","figure skating","pole vault","gymnastics"],"Мария Шарапова — теннисистка."],
+  ["Чем известна?","Yelena Isinbayeva",["pole vault","tennis","gymnastics","ice hockey"],"Елена Исинбаева — прыжки с шестом (pole vault)."],
+  ["Чем известен?","Evgeni Plushenko",["figure skating","ice hockey","tennis","pole vault"],"Евгений Плющенко — фигурист (figure skater)."],
+  ["Чем известна?","Svetlana Khorkina",["gymnastics","figure skating","tennis","pole vault"],"Светлана Хоркина — спортивная гимнастика."],
+  ["Чем известен?","Alexander Ovechkin",["ice hockey","figure skating","tennis","gymnastics"],"Александр Овечкин — хоккеист (ice hockey)."],
+  ["Что сделал?","Peter the Great",["founded Saint Petersburg","made the first spaceflight","wrote Swan Lake","reorganised the law code"],"Пётр I основал Санкт-Петербург в 1703 году."],
+  ["Что сделала?","Catherine II",["reorganised the Russian law code","founded Saint Petersburg","founded Moscow University","abolished serfdom"],"Екатерина II занималась реформой законодательства (Уложенная комиссия)."],
+  ["Что сделал?","Yuri Gagarin",["made the first human flight into space","invented the radio","founded Saint Petersburg","created the first satellite"],"Гагарин — первый человек в космосе, 12 апреля 1961."],
+  ["Кто написал балеты «Лебединое озеро» и «Щелкунчик»?","Swan Lake, The Nutcracker",["Pyotr Tchaikovsky","Sergei Rachmaninoff","Alexander Popov","Ivan Turgenev"],"Чайковский — Swan Lake и The Nutcracker."],
+  ["Кто знаменит своей музыкой для фортепиано?","pieces for the piano",["Sergei Rachmaninoff","Pyotr Tchaikovsky","Anton Chekhov","Ivan Pavlov"],"Рахманинов — композитор и пианист."]]},
+ {id:"r6", group:"Тема России", title:"Места России",
+  hint:"<b>Moscow</b> — Red Square, the Kremlin, St Basil’s Cathedral. <b>Saint Petersburg</b> — the Hermitage. <b>Kaliningrad Oblast</b> — the Curonian Spit. <b>Siberia</b> — Lake Baikal, the Trans-Siberian Railway.",
+  q:[
+  ["Где находится?","the Hermitage Museum",["Saint Petersburg","Moscow","Kaliningrad Oblast","Siberia"],"Эрмитаж — в Санкт-Петербурге."],
+  ["Где находится?","St Basil’s Cathedral",["Moscow","Saint Petersburg","Siberia","Kaliningrad Oblast"],"Храм Василия Блаженного — на Красной площади в Москве."],
+  ["Где находится?","the Curonian Spit",["Kaliningrad Oblast","Siberia","Moscow","Saint Petersburg"],"Куршская коса — в Калининградской области."],
+  ["Где находится?","Lake Baikal",["Siberia","Kaliningrad Oblast","Saint Petersburg","Moscow"],"Байкал — в Сибири, самое глубокое озеро в мире."],
+  ["Где находится?","the Kremlin and Red Square",["Moscow","Saint Petersburg","Siberia","Kaliningrad Oblast"],"Кремль и Красная площадь — в Москве."],
+  ["Через какой регион проходит?","the Trans-Siberian Railway",["Siberia","Kaliningrad Oblast","the Curonian Spit","Red Square"],"Транссибирская магистраль идёт через всю Сибирь до Владивостока."],
+  ["Какой город основал Пётр I?","founded by Peter the Great",["Saint Petersburg","Moscow","Kaliningrad","Vladivostok"],"Санкт-Петербург основан в 1703 году."]]}
+];
+(function(){
+ RUSSIA_UNITS.forEach(function(u){
+  UNITS.push({id:u.id,group:u.group,title:u.title,hint:u.hint,
+   Q:u.q.map(function(x){return {p:x[0],s:x[1],o:x[2],a:0,e:x[3]};})});
+ });
+})();
+
+// ===== ФИПИ: открытый вариант КИМ ЕГЭ 2026, задания 30–36 =====
+EXAMS.push({id:"f26_1", start:30, title:"ФИПИ 2026 · Henry",
+ source:"Открытый вариант КИМ ЕГЭ 2026 по английскому языку, ФИПИ. Ответы — мои: в архиве ФИПИ ключа нет.",
+ text:"It was impossible for Henry to get to his office in half an hour. The wind was howling, and the cars were stuck in snowdrifts. He couldn’t {30} a day like that. The buses had been somewhere around Park Avenue, where they sat huddled like frozen dinosaurs, as one left the flock only very rarely to {31} up a few brave travellers. The travellers rushed from doorways frantically waving their arms, sliding wildly to the curb. They mounted the buses with damp eyes and red faces, and in Henry’s case, icicles on his beard. It had been absolutely impossible to get a taxi. He had given {32} after fifteen minutes of waiting and started walking south from his street. Henry often walked to work. It was only eighteen blocks from door to door. Today he soon {33} that the biting wind was brutal, and he had only gone four more blocks when he had already been out of breath. A friendly doorman {34} him to wait in the lobby. Henry thought that the other, more sensible souls when they caught their first glimpse of the blizzard that morning had {35} not to go to work at all. Henry was sure that the store would be half empty. But he wasn’t the type to sit at home twiddling his thumbs or watching serials. And it wasn’t that he went to work because he was too compulsive. The truth was that Henry went to work six days a week simply because he loved the store very much, {36} often, like today, he didn’t have to come.",
+ gaps:[
+  {o:["receive","remind","remember","recognize"],a:2,e:"Ответ <b>3) remember</b>. couldn’t remember a day like that — не мог припомнить такого дня. remind требует человека: remind sb of sth."},
+  {o:["seize","grab","catch","pick"],a:3,e:"Ответ <b>4) pick</b>. <b>pick up</b> passengers — подбирать пассажиров. После пропуска стоит up."},
+  {o:["up","of","out","off"],a:0,e:"Ответ <b>1) up</b>. <b>give up</b> — сдаться, перестать (ждать)."},
+  {o:["realized","regarded","remained","repeated"],a:0,e:"Ответ <b>1) realized</b>. realize that… — понять, осознать, что…"},
+  {o:["approved","afforded","allowed","accepted"],a:2,e:"Ответ <b>3) allowed</b>. <b>allow sb to do</b> — разрешить кому-то сделать. approve требует of, accept и afford так не употребляются."},
+  {o:["directed","depended","demanded","decided"],a:3,e:"Ответ <b>4) decided</b>. <b>decide not to do</b> — решить не делать."},
+  {o:["until","though","because","despite"],a:1,e:"Ответ <b>2) though</b> — хотя. Дальше целое предложение с уступкой; despite требует существительного."}
+ ]});
+
+</script>
+<script>
+(function(){
+'use strict';
+var KEY='russian_holidays_game_v1';document.title=CONFIG.name;
+var S=load();
+function load(){var d={xp:0,streak:0,lastDay:'',units:{},exams:{},bank:{},answered:0,correct:0};
+  try{var r=JSON.parse(localStorage.getItem(KEY)||'null');if(r)for(var k in d)if(r[k]!==undefined)d[k]=r[k];}catch(e){}
+  return d;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function today(){var d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function yesterday(){var d=new Date(Date.now()-864e5);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function liveStreak(){return (S.lastDay===today()||S.lastDay===yesterday())?S.streak:0;}
+function touchDay(){var t=today();if(S.lastDay===t)return;S.streak=(S.lastDay===yesterday())?S.streak+1:1;S.lastDay=t;}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function plural(n,a,b,c){var m=n%10,h=n%100;return (m===1&&h!==11)?a:(m>=2&&m<=4&&(h<12||h>14))?b:c;}
+function $(s){return document.querySelector(s);}
+var app=$('#app'),nav=$('#nav'),tab='map',timerId=null;
+var ICON={
+ fire:'<svg class="ico" viewBox="0 0 24 24" fill="#B5652F"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg>',
+ star:'<svg class="ico" viewBox="0 0 24 24" fill="#D9B44A"><path d="M12 2l3 7 7 .6-5.3 4.7L18.3 22 12 18l-6.3 4 1.6-7.7L2 9.6 9 9z"/></svg>',
+ play:'<svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" style="margin-left:auto"><path d="M7 4l13 8-13 8z"/></svg>'
+};
+
+nav.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;tab=b.dataset.tab;render();});
+function showNav(on){document.body.classList.toggle('lesson',!on);nav.style.display=on?'':'none';app.style.paddingBottom=on?'96px':'24px';
+  [].forEach.call(nav.querySelectorAll('button'),function(b){b.classList.toggle('on',b.dataset.tab===tab);});}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
+function render(){stopTimer();window.scrollTo(0,0);showNav(true);
+  if(tab==='map')renderMap();else if(tab==='exams')renderExams();else if(tab==='bank')renderBank();else renderProfile();}
+
+function unitStat(u){return S.units[u.id]||{best:0,runs:0};}
+function stars(best,total){var p=best/total;return p>=1?3:p>=0.8?2:p>=0.5?1:0;}
+function starStr(n){return '★★★'.slice(0,n)+'<span style="color:var(--line)">'+'★★★'.slice(0,3-n)+'</span>';}
+function nextUnit(){for(var i=0;i<UNITS.length;i++){var st=unitStat(UNITS[i]);if(stars(st.best,UNITS[i].Q.length)<2)return i;}return 0;}
+function bankCount(){return Object.keys(S.bank).length;}
+
+function renderMap(){
+  var ni=nextUnit(),nu=UNITS[ni],h='';
+  h+='<div class="stack"><div><h1>'+esc(CONFIG.name)+'</h1><div class="muted small">'+esc(CONFIG.subtitle)+(CONFIG.author?'<br>'+esc(CONFIG.author):'')+'</div></div>';
+  h+='<div class="stats"><span>'+ICON.fire+liveStreak()+' '+plural(liveStreak(),'день','дня','дней')+'</span><span>'+ICON.star+S.xp+' XP</span></div>';
+  h+='<button class="hero" data-unit="'+ni+'"><span><span class="t1">'+(unitStat(nu).runs?'Продолжить':'Начать')+' · Юнит '+(ni+1)+'</span><br><span class="t2">'+esc(nu.title)+'</span></span>'+ICON.play+'</button>';
+  h+='<button class="tile" data-go="exams"><span class="badge">Aa</span><span><span class="ttl">Тексты</span><br><span class="muted small">артикли и задания 30–36 ФИПИ, на время</span></span><span class="chev">›</span></button>';
+  var bc=bankCount();
+  h+='<button class="tile" data-go="bank"><span class="badge" style="background:var(--amber-l);color:var(--amber)">!</span><span><span class="ttl">Копилка ошибок</span><br><span class="muted small">'+(bc?bc+' '+plural(bc,'ловушка','ловушки','ловушек')+' на повторение':'пока пусто')+'</span></span><span class="chev">›</span></button></div>';
+  var g='';
+  UNITS.forEach(function(u,i){
+    if(u.group!==g){g=u.group;h+='<div class="grp">'+esc(g)+'</div>';}
+    var st=unitStat(u),n=u.Q.length,s=stars(st.best,n);
+    h+='<button class="tile" style="margin-bottom:10px" data-unit="'+i+'"><span class="badge'+(s>=2?' done':'')+'">'+(i+1)+'</span><span style="flex:1;min-width:0"><span style="font-weight:600">'+esc(u.title)+'</span>'+
+      '<div class="row" style="margin-top:6px"><div class="bar" style="flex:1"><i style="width:'+Math.round(st.best/n*100)+'%"></i></div><span class="stars">'+starStr(s)+'</span></div></span></button>';
+  });
+  app.innerHTML=h;
+  app.querySelectorAll('[data-unit]').forEach(function(b){b.onclick=function(){startUnit(+b.dataset.unit);};});
+  app.querySelectorAll('[data-go]').forEach(function(b){b.onclick=function(){tab=b.dataset.go;render();};});
+}
+
+/* ---------- урок ---------- */
+var L=null;
+function mkItem(q,key,unitTitle){return {q:q,key:key,unit:unitTitle,order:q.o[0]==='—'||q.fixed?[0,1,2,3]:shuffle(q.o.map(function(_,i){return i;}))};}
+function startUnit(i){var u=UNITS[i];
+  L={kind:'unit',idx:i,title:u.title,hint:u.hint,items:shuffle(u.Q.map(function(q,j){return mkItem(q,u.id+':'+j,u.title);})),pos:0,right:0,xp:0,run:0};
+  renderQ();}
+function startBank(){var keys=shuffle(Object.keys(S.bank)).slice(0,10);
+  L={kind:'bank',title:'Копилка ошибок',items:keys.map(function(k){var p=k.split(':');var u=UNITS.find(function(x){return x.id===p[0];});
+     if(u&&u.Q[+p[1]])return mkItem(u.Q[+p[1]],k,u.title);var e=EXAMS.find(function(x){return x.id===p[0];});if(!e)return null;var gp=e.gaps[+p[1]];
+     return mkItem({s:sentenceFor(e,+p[1]),o:gp.o,a:gp.a,e:gp.e},k,e.title);}).filter(Boolean),pos:0,right:0,xp:0,run:0};
+  renderQ();}
+function sentenceFor(e,gi){var num=30+gi;var parts=e.text.split(/(?<=[.!?'’])\s+/);var s=parts.find(function(p){return p.indexOf('{'+num+'}')>=0;})||e.text;
+  return s.replace('{'+num+'}','___').replace(/\{(\d\d)\}/g,'…').replace(/…\./g,'…');}
+function qHtml(s,fill){if(s.indexOf('___')<0)return '<span style="color:var(--blue)">'+esc(s)+'</span>';return esc(s).replace('___','<span class="gap">'+(fill?esc(fill):'&nbsp;')+'</span>');}
+function renderQ(picked){
+  showNav(false);var it=L.items[L.pos],q=it.q,n=L.items.length,answered=picked!==undefined;
+  var h='<div class="top"><button class="x" id="quit" aria-label="Выйти">×</button><div class="bar" style="flex:1"><i style="width:'+(L.pos/n*100)+'%"></i></div><span class="muted small">'+(L.pos+1)+'/'+n+'</span></div>';
+  h+='<div class="muted small">'+esc(it.unit)+(q.p?' · '+esc(q.p):'')+'</div>';
+  h+='<div class="q">'+qHtml(q.s,answered?q.o[q.a]:'')+'</div><div class="opts">';
+  it.order.forEach(function(oi){var c='opt';if(answered){if(oi===q.a)c+=' right';else if(oi===picked)c+=' wrong';}
+    h+='<button class="'+c+'" data-o="'+oi+'"'+(answered?' disabled':'')+'>'+esc(q.o[oi])+'</button>';});
+  h+='</div>';
+  if(!answered&&L.hint)h+='<button class="link muted small" id="hintb" style="margin-top:14px;text-decoration:underline">Подсказка</button><div id="hintbox"></div>';
+  if(answered){var ok=picked===q.a;
+    h+='<div class="fb '+(ok?'ok':'bad')+'"><b class="h">'+(ok?pick(['Верно!','Точно!','Отлично!','Так держать!']):'Верный ответ: '+esc(q.o[q.a]))+'</b>'+q.e+'</div>';
+    h+='<div class="spacer"></div><div class="footer"><button class="btn '+(ok?'ok':'bad')+'" id="next">'+(L.pos+1<n?'Дальше':'Готово')+'</button></div>';}
+  app.innerHTML=h;
+  $('#quit').onclick=function(){if(L.pos===0||confirmQuit())render();};
+  if(!answered){app.querySelectorAll('[data-o]').forEach(function(b){b.onclick=function(){answer(+b.dataset.o);};});
+    var hb=$('#hintb');if(hb)hb.onclick=function(){$('#hintbox').innerHTML='<div class="hint">'+L.hint+'</div>';hb.remove();};}
+  else $('#next').onclick=function(){L.pos++;if(L.pos<n)renderQ();else finish();};
+}
+function confirmQuit(){return true;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function answer(o){var it=L.items[L.pos],ok=o===it.q.a;
+  S.answered++;touchDay();
+  if(ok){S.correct++;L.right++;L.run++;var g=10+(L.run>=3?5:0);L.xp+=g;S.xp+=g;if(L.kind==='bank')delete S.bank[it.key];}
+  else{L.run=0;S.bank[it.key]=1;}
+  save();renderQ(o);}
+function finish(){var n=L.items.length,h='';
+  if(L.kind==='unit'){var u=UNITS[L.idx],st=S.units[u.id]||{best:0,runs:0};st.runs++;if(L.right>st.best)st.best=L.right;S.units[u.id]=st;save();}
+  var s=stars(L.right,n);
+  h+='<div class="spacer"></div><div class="center stack"><div class="stars" style="font-size:44px">'+starStr(s)+'</div>';
+  h+='<div class="big">'+L.right+' / '+n+'</div><div class="muted">'+(s===3?'Без единой ошибки!':s===2?'Отличный результат':s===1?'Неплохо, но есть что повторить':'Повтори правило и попробуй ещё раз')+'</div>';
+  h+='<div class="card"><b>+'+L.xp+' XP</b> · серия '+liveStreak()+' '+plural(liveStreak(),'день','дня','дней')+'</div>';
+  if(L.right<n)h+='<div class="muted small">Ошибки попали в копилку, их можно повторить отдельно.</div>';
+  h+='</div><div class="spacer"></div><div class="stack footer">';
+  if(L.kind==='unit'){h+='<button class="btn" id="again">Ещё раз</button>';if(L.idx+1<UNITS.length)h+='<button class="btn ghost" id="nextu">Следующий юнит</button>';}
+  else if(bankCount())h+='<button class="btn" id="morebank">Повторить ещё</button>';
+  h+='<button class="btn ghost" id="home">На карту</button></div>';
+  app.innerHTML=h;
+  var a=$('#again');if(a)a.onclick=function(){startUnit(L.idx);};
+  var nu=$('#nextu');if(nu)nu.onclick=function(){startUnit(L.idx+1);};
+  var mb=$('#morebank');if(mb)mb.onclick=startBank;
+  $('#home').onclick=function(){tab=L.kind==='bank'?'bank':'map';render();};
+}
+
+/* ---------- копилка ---------- */
+function renderBank(){var bc=bankCount(),h='<div class="stack"><h1>Копилка ошибок</h1>';
+  if(!bc)h+='<div class="card empty">Пока пусто. Ошибёшься в уроке или тексте — ловушка попадёт сюда.</div>';
+  else{h+='<div class="muted">Здесь '+bc+' '+plural(bc,'ловушка','ловушки','ловушек')+'. Ответишь верно — ловушка уйдёт из копилки.</div><button class="btn" id="go">Повторить ('+Math.min(10,bc)+')</button>';
+    var list=Object.keys(S.bank).slice(0,40).map(function(k){var p=k.split(':');var u=UNITS.find(function(x){return x.id===p[0];});
+      if(u){var q=u.Q[+p[1]];if(!q)return '';return '<div class="card small">'+(q.s.indexOf('___')<0?esc(q.s)+' → <b>'+esc(q.o[q.a])+'</b>':esc(q.s).replace('___','<b>'+esc(q.o[q.a])+'</b>'))+'</div>';}
+      var e=EXAMS.find(function(x){return x.id===p[0];});if(!e)return '';var g=e.gaps[+p[1]];return '<div class="card small">'+esc(sentenceFor(e,+p[1])).replace('___','<b>'+esc(g.o[g.a])+'</b>')+'</div>';});
+    h+=list.join('');}
+  app.innerHTML=h+'</div>';var g=$('#go');if(g)g.onclick=startBank;}
+
+/* ---------- экзамен ---------- */
+var X=null;
+function renderExams(){var h='<div class="stack"><h1>Тексты</h1><div class="muted">Текст с семью пропусками, у каждого четыре варианта. Время идёт, но не ограничено.</div>';
+  EXAMS.forEach(function(e,i){var r=S.exams[e.id];
+    h+='<button class="tile" data-ex="'+i+'"><span class="badge'+(r&&r.best===7?' done':'')+'">'+(i+1)+'</span><span><span class="ttl">'+esc(e.title)+'</span><br><span class="muted small">'+(r?'лучший результат '+r.best+'/7':'не решён')+'</span></span><span class="chev">›</span></button>';});
+  app.innerHTML=h+'</div>';
+  app.querySelectorAll('[data-ex]').forEach(function(b){b.onclick=function(){startExam(+b.dataset.ex);};});}
+function startExam(i){X={idx:i,e:EXAMS[i],ans:[null,null,null,null,null,null,null],orders:EXAMS[i].gaps.map(function(){return [0,1,2,3];}),t0:Date.now(),done:false};renderExam();
+  timerId=setInterval(tick,1000);}
+function fmt(ms){var s=Math.floor(ms/1000);return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+function tick(){var t=$('#tm');if(t&&X&&!X.done)t.textContent=fmt(Date.now()-X.t0);}
+function renderExam(){showNav(false);var e=X.e,h='';
+  h+='<div class="top"><button class="x" id="quit" aria-label="Выйти">×</button><b>'+esc(e.title)+'</b><span class="timer" id="tm">'+fmt((X.done?X.t1:Date.now())-X.t0)+'</span></div>';
+  var txt=esc(e.text).replace(/\{(\d\d)\}/g,function(m,num){var gi=+num-30,a=X.ans[gi],c='g';
+    if(X.done)c+=(a===e.gaps[gi].a?' right':' wrong');else if(a!==null)c+=' filled';
+    return '<span class="'+c+'" data-jump="'+gi+'">'+((e.start||1)+gi)+(a!==null?' '+esc(e.gaps[gi].o[a]):'')+'</span>';});
+  h+='<div class="card text">'+txt+'</div>'+(e.source?'<div class="muted small" style="margin-top:8px">'+esc(e.source)+'</div>':'');
+  if(X.done){var r=X.ans.filter(function(a,i){return a===e.gaps[i].a;}).length;
+    h+='<div class="card center" style="margin-top:14px"><div class="big">'+r+' / 7</div><div class="muted">время '+fmt(X.t1-X.t0)+'</div></div>';}
+  e.gaps.forEach(function(g,gi){
+    h+='<div class="gaprow" id="gap'+gi+'"><div class="n">'+((e.start||1)+gi)+'</div><div class="opts">';
+    X.orders[gi].forEach(function(oi){var c='opt';
+      if(X.done){if(oi===g.a)c+=' right';else if(oi===X.ans[gi])c+=' wrong';}else if(X.ans[gi]===oi)c+=' sel';
+      h+='<button class="'+c+'" data-g="'+gi+'" data-o="'+oi+'"'+(X.done?' disabled':'')+'>'+(e.start?(oi+1)+') ':'')+esc(g.o[oi])+'</button>';});
+    h+='</div>';
+    if(X.done&&X.ans[gi]!==g.a)h+='<div class="fb bad small">'+g.e+'</div>';
+    h+='</div>';});
+  var filled=X.ans.filter(function(a){return a!==null;}).length;
+  h+='<div class="footer stack">'+(X.done?'<button class="btn" id="retry">Решить заново</button><button class="btn ghost" id="back">К текстам</button>':'<button class="btn" id="check"'+(filled<7?' disabled':'')+'>'+(filled<7?'Заполнено '+filled+' из 7':'Проверить')+'</button>')+'</div>';
+  var y=window.scrollY;app.innerHTML=h;window.scrollTo(0,y);
+  $('#quit').onclick=function(){tab='exams';render();};
+  app.querySelectorAll('[data-jump]').forEach(function(s){s.onclick=function(){var el=$('#gap'+s.dataset.jump);if(el)el.scrollIntoView({behavior:'smooth',block:'center'});};});
+  if(!X.done){app.querySelectorAll('[data-g]').forEach(function(b){b.onclick=function(){X.ans[+b.dataset.g]=+b.dataset.o;renderExam();};});
+    var c=$('#check');if(c)c.onclick=checkExam;}
+  else{$('#retry').onclick=function(){stopTimer();startExam(X.idx);};$('#back').onclick=function(){tab='exams';render();};}
+}
+function checkExam(){var e=X.e;X.done=true;X.t1=Date.now();stopTimer();touchDay();
+  var r=0;e.gaps.forEach(function(g,gi){var k=e.id+':'+gi;S.answered++;if(X.ans[gi]===g.a){r++;S.correct++;delete S.bank[k];}else S.bank[k]=1;});
+  var xp=r*10+(r===7?20:0);S.xp+=xp;var st=S.exams[e.id]||{best:0,runs:0};st.runs++;if(r>st.best)st.best=r;S.exams[e.id]=st;save();
+  window.scrollTo(0,0);renderExam();}
+
+/* ---------- прогресс ---------- */
+function renderProfile(){var done=UNITS.filter(function(u){return stars(unitStat(u).best,u.Q.length)>=2;}).length;
+  var acc=S.answered?Math.round(S.correct/S.answered*100):0;
+  var h='<div class="stack"><h1>Прогресс</h1><div class="kv">'+
+   '<div class="card"><div class="muted small">Опыт</div><div class="v">'+S.xp+' XP</div></div>'+
+   '<div class="card"><div class="muted small">Серия</div><div class="v">'+liveStreak()+' '+plural(liveStreak(),'день','дня','дней')+'</div></div>'+
+   '<div class="card"><div class="muted small">Юнитов пройдено</div><div class="v">'+done+' / '+UNITS.length+'</div></div>'+
+   '<div class="card"><div class="muted small">Точность</div><div class="v">'+acc+'%</div></div></div>'+
+   '<div class="card small muted">Прогресс сохраняется автоматически в этом браузере: можно закрыть страницу и вернуться позже. На другом устройстве прогресс начнётся заново.</div>'+
+   '<button class="btn ghost" id="reset">Сбросить прогресс</button></div>';
+  app.innerHTML=h;
+  $('#reset').onclick=function(){var b=$('#reset');if(b.dataset.c){S={xp:0,streak:0,lastDay:'',units:{},exams:{},bank:{},answered:0,correct:0};save();render();}
+    else{b.dataset.c='1';b.textContent='Точно сбросить? Нажми ещё раз';b.style.borderColor='var(--bad)';b.style.color='var(--bad)';}};}
+
+render();
+})();
+</script>
+</body>
+</html>
